@@ -40,6 +40,14 @@ export class Board {
 		return boardWithVerticalSeparators.join("\n")
 	}
 
+	public hashTagSeparator(playerName: string): string {
+		return (
+			new Array(5).fill(" # ").join("") +
+			playerName.toUpperCase() +
+			new Array(5).fill(" # ").join("")
+		)
+	}
+
 	private createBoard(): string[][] {
 		return Array.from({ length: this.SIZE }, () =>
 			Array.from({ length: this.SIZE }, () => this.EMPTY_ZONE)

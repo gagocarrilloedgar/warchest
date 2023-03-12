@@ -1,30 +1,42 @@
+import { Board } from "../Board/Board"
+import { Player } from "../Player/Player"
 import { Prompter } from "./Prompter"
 
 export class Game {
+	private readonly MAX_CONTROL_TOKENS = 3
+
 	private readonly prompter: Prompter
+	private readonly board: Board
+	private readonly wolf: Player
+	private readonly crown: Player
+
+	private playerTurn: Player
 
 	constructor() {
 		this.prompter = new Prompter()
+		this.board = new Board(5)
+
+		this.wolf = new Player("wolf", this.MAX_CONTROL_TOKENS)
+		this.crown = new Player("crown", this.MAX_CONTROL_TOKENS)
+		this.playerTurn = this.wolf
+
+		this.initGame()
+	}
+
+	public initGame(): void {
+		const playerInfo = this.playerTurn.getPlayerInfo()
+		console.log(this.board.createDrawableBoard())
+		console.log(this.board.hashTagSeparator(playerInfo.name))
 	}
 
 	public async play(): Promise<void> {
-		const controlTokens = 10
-		const hands = ["1", "2", "3"]
-		const recruits = [
-			{ quanity: 1, type: "1" },
-			{ quanity: 2, type: "2" }
-		]
-		const discards = [
-			{ quanity: 3, type: "3" },
-			{ quanity: 4, type: "4" }
-		]
-
 		await this.prompter.promptStart({
 			message: "Select an action: (move, recruit, place, attack, control, initiative, forfeit): ",
-			controlTokens,
-			hands,
-			recruits,
-			discards
+			playerInfo: this.playerTurn.getPlayerInfo()
 		})
+	}
+
+	private swithPlayerTurn(): void {
+		this.playerTurn === this.wolf ? (this.playerTurn = this.crown) : (this.playerTurn = this.wolf)
 	}
 }

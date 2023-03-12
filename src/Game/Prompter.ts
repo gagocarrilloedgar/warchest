@@ -1,11 +1,10 @@
 import readline from "readline"
 
+import { PlayerTurnInfo } from "../Player/Player"
+
 interface StartPromptProps {
 	message: string
-	controlTokens: number
-	hands?: string[]
-	recruits?: { quanity: number; type: string }[]
-	discards?: { quanity: number; type: string }[]
+	playerInfo: PlayerTurnInfo
 }
 
 export class Prompter {
@@ -21,7 +20,12 @@ export class Prompter {
 	}
 
 	public async promptStart(props: StartPromptProps): Promise<string> {
-		this.printInfo(props.controlTokens, props.hands, props.recruits, props.discards)
+		this.printInfo(
+			props.playerInfo.controlTokens,
+			props.playerInfo.hand,
+			props.playerInfo.recruits,
+			props.playerInfo.discards
+		)
 
 		return new Promise((resolve) => {
 			this.rl.question(props.message, (answer) => {
