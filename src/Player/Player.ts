@@ -1,4 +1,4 @@
-import { ActionType } from "../Actions/Action"
+import { ActionType, ActionTypes } from "../Actions/Action"
 
 export interface PlayerTurnInfo {
 	name: string
@@ -32,5 +32,15 @@ export class Player {
 			recruits: this.recruits,
 			discards: this.discards
 		}
+	}
+
+	public nextAction(action: ActionType): boolean {
+		if (action.value === ActionTypes.FORFEIT) {
+			console.log(`Player ${this.name} has forfeited the game!`)
+
+			return false
+		}
+
+		return true
 	}
 }

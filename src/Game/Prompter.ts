@@ -34,6 +34,10 @@ export class Prompter {
 		})
 	}
 
+	public close(): void {
+		this.rl.close()
+	}
+
 	private printInfo(
 		controlTokens: number,
 		hands?: string[],

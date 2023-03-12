@@ -36,6 +36,9 @@ export class Game {
 		try {
 			const answer = await this.askQuestion()
 			this.selectedAction = ActionType.fromString(answer)
+			const nextAction = this.playerTurn.nextAction(this.selectedAction)
+			this.playerForfeits(!nextAction)
+
 			if (this.questionCount > 0) {
 				this.questionCount--
 				this.drawPlayerWithBoard()
@@ -61,6 +64,14 @@ export class Game {
 		const playerInfo = this.playerTurn.getPlayerInfo()
 		console.log(this.board.createDrawableBoard())
 		console.log(this.board.hashTagSeparator(playerInfo.name))
+	}
+
+	private playerForfeits(hasForfeit: boolean) {
+		if (hasForfeit) {
+			const playerWinner = this.playerTurn === this.wolf ? this.crown : this.wolf
+			console.log(`Player ${playerWinner.getPlayerInfo.name} has won the game!`)
+			this.prompter.close()
+		}
 	}
 
 	private async askQuestion(): Promise<string> {
