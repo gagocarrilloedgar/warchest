@@ -1,14 +1,5 @@
 import readline from "readline"
 
-import { PlayerTurnInfo } from "../Player/Player"
-import { UnitCollection } from "../Player/PlayerRecruitment"
-import { UnitType } from "../Unit/UnitType"
-
-interface StartPromptProps {
-	message: string
-	playerInfo: PlayerTurnInfo
-}
-
 export class Prompter {
 	private readonly rl = readline.createInterface({
 		input: process.stdin,
@@ -21,16 +12,9 @@ export class Prompter {
 		})
 	}
 
-	public async promptAction(props: StartPromptProps): Promise<string> {
-		this.printInfo(
-			props.playerInfo.controlTokens,
-			props.playerInfo.hand,
-			props.playerInfo.recruits,
-			props.playerInfo.discards
-		)
-
+	public async prompt(message: string): Promise<string> {
 		return new Promise((resolve) => {
-			this.rl.question(props.message, (answer) => {
+			this.rl.question(message, (answer) => {
 				resolve(answer)
 			})
 		})
@@ -38,34 +22,5 @@ export class Prompter {
 
 	public close(): void {
 		this.rl.close()
-	}
-
-	private printInfo(
-		controlTokens: number,
-		hands?: UnitType[],
-		recruits?: UnitCollection[],
-		discards?: { quanity: number; type: string }[]
-	): void {
-		const recruitsToPrint = recruits
-			? recruits.map((recruit) => `${recruit.count} ${recruit.unit.type.value}`).join(", ")
-			: ""
-
-		const discardsToPrints = discards
-			? discards.map((discard) => `${discard.quanity} ${discard.type}`).join(", ")
-			: ""
-
-		const handsToPrint = hands ? hands.map((unitType: UnitType) => unitType.value).join(", ") : ""
-
-		const handInfo = `Hand: ${handsToPrint}`
-
-		const recruitInfo = `Recruitment pieces: ${recruitsToPrint}`
-
-		const discardInfo = `Discard pile:  ${discardsToPrints}`
-
-		const controlTokenInfo = `Control tokens: ${controlTokens}`
-
-		const printAbleInfo = [handInfo, recruitInfo, discardInfo, controlTokenInfo].join("\n")
-
-		console.log(printAbleInfo)
 	}
 }

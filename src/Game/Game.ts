@@ -2,7 +2,7 @@ import { ActionType } from "../Actions/Action"
 import { Board } from "../Board/Board"
 import { Player } from "../Player/Player"
 import { UnitTypes } from "../Unit/UnitType"
-import { Prompter } from "./Prompter"
+import { GamePrompter } from "./GamePrompter"
 
 export class Game {
 	private readonly MAX_CONTROL_TOKENS = 3
@@ -10,7 +10,7 @@ export class Game {
 	private readonly MAX_UNITS_PER_PLAYER = 2
 	private readonly aviailableUnits: UnitTypes[]
 
-	private readonly prompter: Prompter
+	private readonly prompter: GamePrompter
 	private readonly board: Board
 
 	private selectedAction: ActionType | undefined
@@ -21,7 +21,7 @@ export class Game {
 	private playerTurn: Player
 
 	constructor() {
-		this.prompter = new Prompter()
+		this.prompter = new GamePrompter()
 		this.board = new Board(5)
 		this.aviailableUnits = Object.values(UnitTypes).filter(
 			(type: UnitTypes) => type !== UnitTypes.ROYAL

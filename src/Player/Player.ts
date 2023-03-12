@@ -1,4 +1,5 @@
 import { ActionType, ActionTypes } from "../Actions/Action"
+import { ActionFactory } from "../Actions/ActionFactory"
 import { UnitType, UnitTypes } from "../Unit/UnitType"
 import { Hand } from "./Hand"
 import { PlayerBag } from "./PlayerBag"
@@ -49,6 +50,9 @@ export class Player {
 
 			return false
 		}
+
+		const newAction = ActionFactory.create(action)
+		newAction.execute()
 
 		return true
 	}
