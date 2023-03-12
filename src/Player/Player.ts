@@ -1,6 +1,7 @@
 import { ActionType, ActionTypes } from "../Actions/Action"
 import { UnitType } from "../Unit/UnitType"
 import { Hand } from "./Hand"
+import { PlayerBag } from "./PlayerBag"
 
 export interface PlayerTurnInfo {
 	name: string
@@ -17,10 +18,12 @@ export class Player {
 	private readonly controlTokens: number
 	private readonly name: string
 	private readonly currentAction: ActionType | undefined
+	private readonly bag: PlayerBag
 
 	constructor(name: string, conrolTokens: number) {
 		this.name = name
-		this.hand = new Hand()
+		this.bag = new PlayerBag()
+		this.hand = new Hand(this.bag.getThreeRandomUnits())
 		this.recruits = []
 		this.discards = []
 		this.controlTokens = conrolTokens
