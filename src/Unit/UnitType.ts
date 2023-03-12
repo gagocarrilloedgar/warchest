@@ -16,6 +16,14 @@ export enum UnitAcronyms {
 	ROYAL = "Ro"
 }
 
+export enum EnumUnitTypesCount {
+	ARCHER = 4,
+	BERSERKER = 4,
+	MERCENARY = 5,
+	SWORDSMAN = 4,
+	ROYAL = 1
+}
+
 export class UnitType extends EnumValueObject<UnitTypes> {
 	constructor(value: UnitTypes) {
 		super(value, Object.values(UnitTypes))
@@ -27,6 +35,10 @@ export class UnitType extends EnumValueObject<UnitTypes> {
 
 	public getAcronym(): UnitAcronyms {
 		return UnitAcronyms[this.value]
+	}
+
+	public getMaxCount(): EnumUnitTypesCount {
+		return EnumUnitTypesCount[this.value]
 	}
 
 	protected throwErrorForInvalidValue(value: UnitTypes): void {

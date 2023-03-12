@@ -1,6 +1,7 @@
 import readline from "readline"
 
 import { PlayerTurnInfo } from "../Player/Player"
+import { UnitCollection } from "../Player/PlayerRecruitment"
 import { UnitType } from "../Unit/UnitType"
 
 interface StartPromptProps {
@@ -23,7 +24,7 @@ export class Prompter {
 	public async promptAction(props: StartPromptProps): Promise<string> {
 		this.printInfo(
 			props.playerInfo.controlTokens,
-			props.playerInfo.hand.map((unitType: UnitType) => unitType.value),
+			props.playerInfo.hand,
 			props.playerInfo.recruits,
 			props.playerInfo.discards
 		)
@@ -41,18 +42,19 @@ export class Prompter {
 
 	private printInfo(
 		controlTokens: number,
-		hands?: string[],
-		recruits?: { quanity: number; type: string }[],
+		hands?: UnitType[],
+		recruits?: UnitCollection[],
 		discards?: { quanity: number; type: string }[]
 	): void {
 		const recruitsToPrint = recruits
-			? recruits.map((recruit) => `${recruit.quanity} ${recruit.type}`).join(", ")
+			? recruits.map((recruit) => `${recruit.count} ${recruit.unit.type.value}`).join(", ")
 			: ""
 
 		const discardsToPrints = discards
 			? discards.map((discard) => `${discard.quanity} ${discard.type}`).join(", ")
 			: ""
-		const handsToPrint = hands ? hands.join(", ") : ""
+
+		const handsToPrint = hands ? hands.map((unitType: UnitType) => unitType.value).join(", ") : ""
 
 		const handInfo = `Hand: ${handsToPrint}`
 

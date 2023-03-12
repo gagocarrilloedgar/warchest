@@ -1,30 +1,34 @@
 import { ActionType, ActionTypes } from "../Actions/Action"
-import { UnitType } from "../Unit/UnitType"
+import { UnitType, UnitTypes } from "../Unit/UnitType"
 import { Hand } from "./Hand"
 import { PlayerBag } from "./PlayerBag"
+import { PlayerRecruitment, UnitCollection } from "./PlayerRecruitment"
 
 export interface PlayerTurnInfo {
 	name: string
 	controlTokens: number
 	hand: UnitType[]
-	recruits: { quanity: number; type: string }[]
+	recruits: UnitCollection[]
 	discards: { quanity: number; type: string }[]
 }
 
 export class Player {
 	private readonly hand: Hand
-	private readonly recruits: { quanity: number; type: string }[]
+	private readonly recruits: PlayerRecruitment
 	private readonly discards: { quanity: number; type: string }[]
 	private readonly controlTokens: number
 	private readonly name: string
 	private readonly currentAction: ActionType | undefined
 	private readonly bag: PlayerBag
+	private readonly UNITS_FOR_THE_BAG = 2
 
-	constructor(name: string, conrolTokens: number) {
+	constructor(name: string, conrolTokens: number, playerTypes: UnitTypes[]) {
 		this.name = name
-		this.bag = new PlayerBag()
+
+		this.recruits = new PlayerRecruitment(playerTypes, this.UNITS_FOR_THE_BAG)
+		this.bag = new PlayerBag(playerTypes, this.UNITS_FOR_THE_BAG)
 		this.hand = new Hand(this.bag.getThreeRandomUnits())
-		this.recruits = []
+
 		this.discards = []
 		this.controlTokens = conrolTokens
 	}
@@ -34,7 +38,7 @@ export class Player {
 			name: this.name,
 			controlTokens: this.controlTokens,
 			hand: this.hand.getUnitTypesAvailable(),
-			recruits: this.recruits,
+			recruits: this.recruits.getAvailableUnits(),
 			discards: this.discards
 		}
 	}

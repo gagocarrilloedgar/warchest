@@ -7,13 +7,13 @@ export interface MoveOrAttack {
 }
 
 export class Unit {
-	protected static readonly max: number
-
 	public position: Position | null
 	public readonly type: UnitType
+	public readonly MAX: number
 
 	constructor(type: UnitType) {
 		this.type = type
+		this.MAX = type.getMaxCount()
 		this.position = null
 	}
 
@@ -21,6 +21,10 @@ export class Unit {
 		const unitType = UnitType.fromValue(value)
 
 		return new Unit(unitType)
+	}
+
+	public get max(): number {
+		return this.MAX
 	}
 
 	private move(position: Position): void {
@@ -33,6 +37,7 @@ export class Archer extends Unit {
 		super(UnitType.fromValue(UnitTypes.ARCHER))
 	}
 }
+
 export class Swordsman extends Unit {
 	constructor() {
 		super(UnitType.fromValue(UnitTypes.SWORDSMAN))

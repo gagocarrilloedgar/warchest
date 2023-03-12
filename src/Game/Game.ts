@@ -1,28 +1,37 @@
 import { ActionType } from "../Actions/Action"
 import { Board } from "../Board/Board"
 import { Player } from "../Player/Player"
+import { UnitTypes } from "../Unit/UnitType"
 import { Prompter } from "./Prompter"
 
 export class Game {
 	private readonly MAX_CONTROL_TOKENS = 3
 	private readonly MAX_QUESTIONS = 2
+	private readonly MAX_UNITS_PER_PLAYER = 2
+	private readonly aviailableUnits: UnitTypes[]
 
 	private readonly prompter: Prompter
 	private readonly board: Board
-	private readonly wolf: Player
-	private readonly crown: Player
 
 	private selectedAction: ActionType | undefined
 	private questionCount = this.MAX_QUESTIONS
 
+	private readonly wolf: Player
+	private readonly crown: Player
 	private playerTurn: Player
 
 	constructor() {
 		this.prompter = new Prompter()
 		this.board = new Board(5)
+		this.aviailableUnits = Object.values(UnitTypes).filter(
+			(type: UnitTypes) => type !== UnitTypes.ROYAL
+		)
 
-		this.wolf = new Player("wolf", this.MAX_CONTROL_TOKENS)
-		this.crown = new Player("crown", this.MAX_CONTROL_TOKENS)
+		const wolfUnits = this.randomizeUnits()
+		const leftUnits = this.randomizeUnits()
+
+		this.wolf = new Player("wolf", this.MAX_CONTROL_TOKENS, wolfUnits)
+		this.crown = new Player("crown", this.MAX_CONTROL_TOKENS, leftUnits)
 		this.playerTurn = this.wolf
 
 		this.initGame()
@@ -30,6 +39,19 @@ export class Game {
 
 	public initGame(): void {
 		this.drawPlayerWithBoard()
+	}
+
+	public randomizeUnits = (): UnitTypes[] => {
+		const unitsToReturn: UnitTypes[] = []
+
+		for (let i = 0; i < this.MAX_UNITS_PER_PLAYER; i++) {
+			const randomIndex = Math.floor(Math.random() * this.aviailableUnits.length)
+			const randomUnitType = this.aviailableUnits[randomIndex]
+			this.aviailableUnits.splice(randomIndex, 1)
+			unitsToReturn.push(randomUnitType)
+		}
+
+		return unitsToReturn
 	}
 
 	public async play(): Promise<void> {
