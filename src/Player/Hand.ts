@@ -16,4 +16,8 @@ export class Hand {
 	public getUnits(): Unit[] {
 		return this.units
 	}
+
+	public removeSelectedUnit(unit: Unit): void {
+		this.units.splice(this.units.indexOf(unit), 1)
+	}
 }

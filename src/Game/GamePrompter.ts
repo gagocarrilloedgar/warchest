@@ -1,7 +1,7 @@
 import { PlayerTurnInfo } from "../Player/Player"
 import { UnitCollection } from "../Player/PlayerRecruitment"
+import { Prompter } from "../shared/Prompter"
 import { UnitType } from "../Unit/UnitType"
-import { Prompter } from "./Prompter"
 
 interface StartPromptProps {
 	message: string

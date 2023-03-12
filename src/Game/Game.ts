@@ -9,23 +9,21 @@ export class Game {
 	private readonly MAX_QUESTIONS = 2
 	private readonly MAX_UNITS_PER_PLAYER = 2
 	private readonly aviailableUnits: UnitTypes[]
-
-	private readonly prompter: GamePrompter
-	private readonly board: Board
-
-	private selectedAction: ActionType | undefined
-	private questionCount = this.MAX_QUESTIONS
-
 	private readonly wolf: Player
 	private readonly crown: Player
+	private readonly board: Board
+
+	private readonly prompter: GamePrompter
+	private selectedAction: ActionType | undefined
+	private questionCount = this.MAX_QUESTIONS
 	private playerTurn: Player
 
 	constructor() {
-		this.prompter = new GamePrompter()
 		this.board = new Board(5)
 		this.aviailableUnits = Object.values(UnitTypes).filter(
 			(type: UnitTypes) => type !== UnitTypes.ROYAL
 		)
+		this.prompter = new GamePrompter()
 
 		const wolfUnits = this.randomizeUnits()
 		const leftUnits = this.randomizeUnits()
@@ -58,22 +56,27 @@ export class Game {
 		try {
 			const answer = await this.askQuestion()
 			this.selectedAction = ActionType.fromString(answer)
-			const nextAction = this.playerTurn.nextAction(this.selectedAction)
+			const nextAction = await this.playerTurn.nextAction(this.selectedAction, this.prompter)
+
 			this.playerForfeits(!nextAction)
+
+			if (nextAction) {
+				this.board.placeUnitOnBoard(nextAction.unit, nextAction.position)
+			}
 
 			if (this.questionCount > 0) {
 				this.questionCount--
 				this.drawPlayerWithBoard()
-				await this.play()
 			} else {
 				this.swithPlayerTurn()
 				this.drawPlayerWithBoard()
-				await this.play()
 			}
 		} catch (error: unknown) {
 			this.drawInvalidAction()
-			await this.play()
+			this.prompter.close()
 		}
+
+		await this.play()
 	}
 
 	private drawInvalidAction(): void {

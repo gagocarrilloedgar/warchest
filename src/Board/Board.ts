@@ -1,3 +1,5 @@
+import { Unit } from "../Unit/Unit"
+
 export interface Position {
 	x: number
 	y: number
@@ -46,6 +48,10 @@ export class Board {
 			playerName.toUpperCase() +
 			new Array(5).fill(" # ").join("")
 		)
+	}
+
+	public placeUnitOnBoard(unit: Unit, position: Position): void {
+		this.board[position.x][position.y] = unit.type.getAcronym()
 	}
 
 	private createBoard(): string[][] {

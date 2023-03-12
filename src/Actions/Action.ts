@@ -25,5 +25,5 @@ export class ActionType extends EnumValueObject<ActionTypes> {
 }
 
 export interface Action {
-	execute(): void
+	execute(): Promise<void>
 }
