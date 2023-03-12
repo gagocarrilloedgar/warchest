@@ -69,7 +69,7 @@ export class Game {
 	private playerForfeits(hasForfeit: boolean) {
 		if (hasForfeit) {
 			const playerWinner = this.playerTurn === this.wolf ? this.crown : this.wolf
-			console.log(`Player ${playerWinner.getPlayerInfo.name} has won the game!`)
+			console.log(`Player ${playerWinner.getPlayerInfo().name} has won the game!`)
 			this.prompter.close()
 		}
 	}

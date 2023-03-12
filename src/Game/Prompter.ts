@@ -1,6 +1,7 @@
 import readline from "readline"
 
 import { PlayerTurnInfo } from "../Player/Player"
+import { UnitType } from "../Unit/UnitType"
 
 interface StartPromptProps {
 	message: string
@@ -22,7 +23,7 @@ export class Prompter {
 	public async promptAction(props: StartPromptProps): Promise<string> {
 		this.printInfo(
 			props.playerInfo.controlTokens,
-			props.playerInfo.hand,
+			props.playerInfo.hand.map((unitType: UnitType) => unitType.value),
 			props.playerInfo.recruits,
 			props.playerInfo.discards
 		)
