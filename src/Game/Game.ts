@@ -1,3 +1,4 @@
+import { ActionType } from "../Actions/Action"
 import { Board } from "../Board/Board"
 import { Player } from "../Player/Player"
 import { Prompter } from "./Prompter"
@@ -11,6 +12,7 @@ export class Game {
 	private readonly wolf: Player
 	private readonly crown: Player
 
+	private selectedAction: ActionType | undefined
 	private questionCount = this.MAX_QUESTIONS
 
 	private playerTurn: Player
@@ -31,18 +33,28 @@ export class Game {
 	}
 
 	public async play(): Promise<void> {
-		const answer = await this.askQuestion()
-		console.log({ answer, questionCount: this.questionCount })
-
-		if (this.questionCount > 0) {
-			this.questionCount--
-			this.drawPlayerWithBoard()
-			await this.play()
-		} else {
-			this.swithPlayerTurn()
-			this.drawPlayerWithBoard()
+		try {
+			const answer = await this.askQuestion()
+			this.selectedAction = ActionType.fromString(answer)
+			if (this.questionCount > 0) {
+				this.questionCount--
+				this.drawPlayerWithBoard()
+				await this.play()
+			} else {
+				this.swithPlayerTurn()
+				this.drawPlayerWithBoard()
+				await this.play()
+			}
+		} catch (error: unknown) {
+			this.drawInvalidAction()
 			await this.play()
 		}
+	}
+
+	private drawInvalidAction(): void {
+		const spaces = " ".repeat(4)
+		const arrayOfInfo = [spaces, "Invalid action, please try again", spaces]
+		console.log(arrayOfInfo.join("\n"))
 	}
 
 	private drawPlayerWithBoard(): void {

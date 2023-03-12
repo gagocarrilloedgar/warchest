@@ -1,3 +1,5 @@
+import { ActionType } from "../Actions/Action"
+
 export interface PlayerTurnInfo {
 	name: string
 	controlTokens: number
@@ -12,6 +14,7 @@ export class Player {
 	private readonly discards: { quanity: number; type: string }[]
 	private readonly controlTokens: number
 	private readonly name: string
+	private readonly currentAction: ActionType | undefined
 
 	constructor(name: string, conrolTokens: number) {
 		this.name = name

@@ -1,2 +1,2 @@
-export * from "./MoveAction"
-export * from "./PlaceAction"
+export * from "./Action";
+
