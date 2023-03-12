@@ -23,3 +23,7 @@ export class ActionType extends EnumValueObject<ActionTypes> {
 		throw new Error(`Invalid action type: ${value}`)
 	}
 }
+
+export interface Action {
+	execute(): void
+}

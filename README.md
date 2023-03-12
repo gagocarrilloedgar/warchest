@@ -1,6 +1,5 @@
 # Warchest-lite
 
-
 ## Features
 
 - [TypeScript](https://www.typescriptlang.org/) (v4)
@@ -14,12 +13,25 @@
 
 ## Working with this project
 
+- Execute the gam: `npm run dev`
 - Install the dependencies: `npm install`
 - Execute the tests: `npm run test`
 - Check linter errors: `npm run lint`
 - Fix linter errors: `npm run lint:fix`
 
 There is no specific command to start the app, we leave that up to you. If you wish to create a specific type of app (web, API…), we recommend checking the templates below.
+
+## Changelog
+
+- Add board initialization
+- Add prompter
+- Add player and
+- Add information to show when prompting
+- Add Base game loop
+- Add selector error handler
+- Add forfeit action hanlder and information about the winner
+- Add base unit and different user value objetcs to handle units
+- Add init coin shaffle information
 
 ## Acknowledgments
 
