@@ -19,7 +19,7 @@ export class Prompter {
 		})
 	}
 
-	public async promptStart(props: StartPromptProps): Promise<string> {
+	public async promptAction(props: StartPromptProps): Promise<string> {
 		this.printInfo(
 			props.playerInfo.controlTokens,
 			props.playerInfo.hand,
