@@ -20,16 +20,6 @@ export class Board {
 
 	private readonly board: string[][]
 
-	/*
-    [
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."]
-    ]
-    */
-
 	constructor(size: number) {
 		this.SIZE = size
 		this.board = this.createBoard()
