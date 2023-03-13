@@ -1,4 +1,7 @@
+import { Board } from "../Board/Board"
+import { Player } from "../Player/Player"
 import { EnumValueObject } from "../shared/EnumValueObject"
+import { PromptQuestion } from "../shared/Prompter"
 
 export enum ActionTypes {
 	PLACE = "place",
@@ -25,5 +28,5 @@ export class ActionType extends EnumValueObject<ActionTypes> {
 }
 
 export interface Action {
-	execute(): Promise<void>
+	execute(board?: Board, player?: Player, propmpter?: PromptQuestion): Promise<void>
 }

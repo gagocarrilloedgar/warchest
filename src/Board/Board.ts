@@ -1,8 +1,15 @@
+import { Player } from "../Player/Player"
 import { Unit } from "../Unit/Unit"
 
 export interface Position {
 	x: number
 	y: number
+}
+
+export interface TableBoardPosition {
+	value: string
+	controlledBy: Player | null
+	unit: Unit | null
 }
 
 export class Board {
@@ -14,13 +21,16 @@ export class Board {
 	private readonly HORIZONTAL_SEPARATOR = "-"
 
 	private readonly NEUTRAL_ZONES = [
-		{ x: 1, y: 2 },
-		{ x: 3, y: 1 },
+		{ x: 1, y: 1 },
 		{ x: 1, y: 3 },
-		{ x: 3, y: 2 }
+		{ x: 3, y: 3 },
+		{ x: 3, y: 1 }
 	]
 
-	private readonly board: string[][]
+	private readonly WOLF_ZONES = [{ x: 4, y: 2 }]
+	private readonly CROWN_ZONES = [{ x: 0, y: 2 }]
+
+	private readonly board: TableBoardPosition[][]
 
 	constructor(size: number) {
 		this.SIZE = size
@@ -30,7 +40,15 @@ export class Board {
 	public createDrawableBoard(): string {
 		const board = this.board.map((row, rowIndex) => {
 			const newRow = row.map((column, columnIndex) => {
-				return this.isNeutralZone(rowIndex, columnIndex) ? this.NEUTRAL_ZONE : column
+				const zone = this.isControlZone(this.NEUTRAL_ZONES, rowIndex, columnIndex)
+					? this.NEUTRAL_ZONE
+					: this.isControlZone(this.WOLF_ZONES, rowIndex, columnIndex)
+					? "W"
+					: this.isControlZone(this.CROWN_ZONES, rowIndex, columnIndex)
+					? "C"
+					: column.value
+
+				return zone
 			})
 
 			return newRow.join(this.SEPARATOR)
@@ -51,12 +69,46 @@ export class Board {
 	}
 
 	public placeUnitOnBoard(unit: Unit, position: Position): void {
-		this.board[position.x][position.y] = unit.type.getAcronym()
+		if (!this.checkIfPositionIsInBoard({ x: position.x, y: position.y })) {
+			throw new Error("Position is not in board")
+		}
+
+		this.board[position.x][position.y].value = unit.type.getAcronym()
 	}
 
-	private createBoard(): string[][] {
+	public moveUnitOnBoard(unit: Unit, from: Position, to: Position): void {
+		if (!this.checkIfPositionIsInBoard({ x: from.x, y: from.y })) {
+			throw new Error("Position is not in board")
+		}
+	}
+
+	public addControlledZones(wolf: Player, crown: Player): void {
+		this.board.forEach((row, rowIndex) => {
+			row.forEach((_column, columnIndex) => {
+				const zone = this.isControlZone(this.WOLF_ZONES, rowIndex, columnIndex)
+					? wolf
+					: this.isControlZone(this.CROWN_ZONES, rowIndex, columnIndex)
+					? crown
+					: null
+
+				this.board[rowIndex][columnIndex].controlledBy = zone
+			})
+		})
+	}
+
+	public get getBoard(): TableBoardPosition[][] {
+		return this.board
+	}
+
+	private createBoard(): { value: string; controlledBy: Player | null; unit: Unit | null }[][] {
 		return Array.from({ length: this.SIZE }, () =>
-			Array.from({ length: this.SIZE }, () => this.EMPTY_ZONE)
+			Array.from({ length: this.SIZE }, () => {
+				return {
+					value: this.EMPTY_ZONE,
+					controlledBy: null,
+					unit: null
+				}
+			})
 		)
 	}
 
@@ -82,7 +134,47 @@ export class Board {
 		})
 	}
 
-	private isNeutralZone(rowIndex: number, columnIndex: number) {
-		return this.NEUTRAL_ZONES.some((zone) => zone.x === rowIndex && zone.y === columnIndex)
+	private isControlZone(controlZones: Position[], row: number, col: number) {
+		return controlZones.some((zone) => zone.x === row && zone.y === col)
+	}
+
+	private checkIfPositionIsInBoard(position: Position): boolean {
+		return position.x >= 0 && position.x < this.SIZE && position.y >= 0 && position.y < this.SIZE
+	}
+
+	private checkIfPositionIsOrthogonalyAdjacentToAnyPlayerUnit(
+		position: Position,
+		player: Player
+	): boolean {
+		const playerUnits = player.playerInfo.name === "Wolf" ? this.WOLF_ZONES : this.CROWN_ZONES
+
+		return playerUnits.some((playerUnit) => {
+			const { x, y } = playerUnit
+
+			return (
+				(x === position.x && y === position.y + 1) ||
+				(x === position.x && y === position.y - 1) ||
+				(x === position.x + 1 && y === position.y) ||
+				(x === position.x - 1 && y === position.y)
+			)
+		})
+	}
+
+	private checkIfPositionIsDiagonallyAdjacentToAnyPlayerUnit(
+		position: Position,
+		player: Player
+	): boolean {
+		const playerUnits = player.playerInfo.name === "Wolf" ? this.WOLF_ZONES : this.CROWN_ZONES
+
+		return playerUnits.some((playerUnit) => {
+			const { x, y } = playerUnit
+
+			return (
+				(x === position.x + 1 && y === position.y + 1) ||
+				(x === position.x + 1 && y === position.y - 1) ||
+				(x === position.x - 1 && y === position.y + 1) ||
+				(x === position.x - 1 && y === position.y - 1)
+			)
+		})
 	}
 }

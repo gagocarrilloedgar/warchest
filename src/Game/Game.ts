@@ -32,6 +32,8 @@ export class Game {
 		this.crown = new Player("crown", this.MAX_CONTROL_TOKENS, leftUnits)
 		this.playerTurn = this.wolf
 
+		this.board.addControlledZones(this.wolf, this.crown)
+
 		this.initGame()
 	}
 
@@ -56,13 +58,13 @@ export class Game {
 		try {
 			const answer = await this.askQuestion()
 			this.selectedAction = ActionType.fromString(answer)
-			const nextAction = await this.playerTurn.nextAction(this.selectedAction, this.prompter)
+			const nextAction = await this.playerTurn.nextAction(
+				this.board,
+				this.selectedAction,
+				this.prompter
+			)
 
 			this.playerForfeits(!nextAction)
-
-			if (nextAction) {
-				this.board.placeUnitOnBoard(nextAction.unit, nextAction.position)
-			}
 
 			if (this.questionCount > 0) {
 				this.questionCount--
@@ -86,7 +88,7 @@ export class Game {
 	}
 
 	private drawPlayerWithBoard(): void {
-		const playerInfo = this.playerTurn.getPlayerInfo()
+		const playerInfo = this.playerTurn.playerInfo
 		console.log(this.board.createDrawableBoard())
 		console.log(this.board.hashTagSeparator(playerInfo.name))
 	}
@@ -94,7 +96,7 @@ export class Game {
 	private playerForfeits(hasForfeit: boolean) {
 		if (hasForfeit) {
 			const playerWinner = this.playerTurn === this.wolf ? this.crown : this.wolf
-			console.log(`Player ${playerWinner.getPlayerInfo().name} has won the game!`)
+			console.log(`Player ${playerWinner.playerInfo.name} has won the game!`)
 			this.prompter.close()
 		}
 	}
@@ -102,7 +104,7 @@ export class Game {
 	private async askQuestion(): Promise<string> {
 		return await this.prompter.promptAction({
 			message: "Select an action: (move, recruit, place, attack, control, initiative, forfeit): ",
-			playerInfo: this.playerTurn.getPlayerInfo()
+			playerInfo: this.playerTurn.playerInfo
 		})
 	}
 

@@ -1,4 +1,6 @@
 import { ActionType, ActionTypes } from "../Actions/Action"
+import { ActionFactory } from "../Actions/ActionFactory"
+import { Board } from "../Board/Board"
 import { PromptQuestion } from "../shared/Prompter"
 import { Unit } from "../Unit/Unit"
 import { UnitType, UnitTypes } from "../Unit/UnitType"
@@ -41,7 +43,7 @@ export class Player {
 		this.controlTokens = conrolTokens
 	}
 
-	public getPlayerInfo(): PlayerTurnInfo {
+	public get playerInfo(): PlayerTurnInfo {
 		return {
 			name: this.name,
 			controlTokens: this.controlTokens,
@@ -52,43 +54,33 @@ export class Player {
 	}
 
 	public async nextAction(
+		board: Board,
 		action: ActionType,
 		propmpter: PromptQuestion
-	): Promise<{ position: { x: number; y: number }; unit: Unit } | null> {
+	): Promise<boolean> {
 		if (action.value === ActionTypes.FORFEIT) {
 			console.log(`Player ${this.name} has forfeited the game!`)
 
-			return null
+			return false
 		}
 
-		if (action.value === ActionTypes.PLACE) {
-			try {
-				const unitTypeString = await propmpter.prompt("Which unit would you like to place?")
-
-				const unitType = UnitType.fromValue(unitTypeString.toUpperCase() as UnitTypes)
-				const newUnit = new Unit(unitType)
-
-				const answer2 = await propmpter.prompt("Where would you like to place it?")
-
-				const [x, y] = answer2.split(",").map((value) => parseInt(value, 10))
-
-				this.hand.removeSelectedUnit(newUnit)
-				this.placeUnitOnBoard(new Unit(unitType), { x, y })
-
-				return {
-					position: { x, y },
-					unit: newUnit
-				}
-			} catch (error) {
-				console.log("Please enter a valid unit type.")
-				await this.nextAction(action, propmpter)
+		try {
+			await ActionFactory.create(action).execute(board, this, propmpter)
+		} catch (error: Error | unknown) {
+			if (error instanceof Error) {
+				console.log(error.message)
 			}
+			await this.nextAction(board, action, propmpter)
 		}
 
-		return null
+		return true
 	}
 
 	public placeUnitOnBoard(unit: Unit, position: { x: number; y: number }): void {
 		this.unitsInBoard.push({ position, unit })
+	}
+
+	public removeUnit(unit: Unit): void {
+		this.hand.removeSelectedUnit(unit)
 	}
 }

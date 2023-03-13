@@ -18,9 +18,13 @@ export class Prompter {
 	}
 
 	public async prompt(message: string): Promise<string> {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
 			this.primary.question(message, (answer) => {
-				resolve(answer)
+				try {
+					resolve(answer)
+				} catch (error) {
+					reject("Invalid input")
+				}
 			})
 		})
 	}
