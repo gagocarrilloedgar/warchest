@@ -12,12 +12,12 @@ export interface MoveOrAttack {
 }
 
 export class Unit {
-	public static deltaMove = 1
-	public static deltaAttack = 1
-	public static moveDirection: Directions = Directions.ORTHOGONAL
-	public static attackDirection: Directions = Directions.ORTHOGONAL
-	public static attackTimes = 1
-	public static actions = 1
+	public deltaMove = 1
+	public deltaAttack = 1
+	public moveDirection: Directions = Directions.ORTHOGONAL
+	public attackDirection: Directions = Directions.ORTHOGONAL
+	public attackTimes = 1
+	public actions = 1
 
 	public position: Position | null
 	public readonly type: UnitType

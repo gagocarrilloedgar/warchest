@@ -1,14 +1,14 @@
 import { Board } from "../Board/Board"
 import { Player } from "../Player/Player"
 import { Position } from "../shared/Position"
-import { Prompter } from "../shared/Prompter"
+import { Prompter, PromptQuestion } from "../shared/Prompter"
 import { Unit } from "../Unit/Unit"
 import { UnitType, UnitTypes } from "../Unit/UnitType"
 import { Action, ActionType, ActionTypes } from "./Action"
 
-class MoveError extends Error {
+class PlaceError extends Error {
 	constructor(message: string) {
-		super(`MoveError: ${message}`)
+		super(`PlaceError: ${message}`)
 	}
 }
 
@@ -23,7 +23,7 @@ export class Place implements Action {
 		this.propmpter = new Prompter()
 	}
 
-	public async execute(board: Board, player: Player, propmpter: Prompter): Promise<void> {
+	public async execute(board: Board, player: Player, propmpter: PromptQuestion): Promise<void> {
 		try {
 			const hand = player.playerInfo.hand
 
@@ -38,7 +38,7 @@ export class Place implements Action {
 			const isAvailable = availableTypes.includes(unitType.value)
 
 			if (!isAvailable) {
-				throw new MoveError("Unit not available in hand.")
+				throw new PlaceError("Unit not available in hand.")
 			}
 
 			const newUnit = new Unit(unitType)
@@ -53,14 +53,14 @@ export class Place implements Action {
 			})
 
 			if (!isPosible) {
-				throw new MoveError("Position is not adjacent to any of your units.")
+				throw new PlaceError("Position is not adjacent to any of your units.")
 			}
 
 			player.removeUnit(newUnit)
 			player.placeUnitOnBoard(new Unit(unitType), { x, y })
-			board.placeUnitOnBoard(new Unit(unitType), { x, y })
-		} catch (error: MoveError | unknown) {
-			if (error instanceof Error) {
+			board.placeUnitOnBoard(new Unit(unitType), { x, y }, player)
+		} catch (error: PlaceError | unknown) {
+			if (error instanceof PlaceError) {
 				console.log(error.message)
 			}
 			await this.execute(board, player, propmpter)
@@ -79,23 +79,15 @@ export class Place implements Action {
 		const leftPosition =
 			x - 1 >= 0 && tableBoard[x - 1][y].controlledBy?.playerInfo.name === playerName
 
-		console.log({ x, y, leftPosition })
-
 		const rightPosition =
 			x + 1 < tableBoard.length && tableBoard[x + 1][y].controlledBy?.playerInfo.name === playerName
-
-		console.log({ x, y, rightPosition })
 
 		const topPosition =
 			y - 1 >= 0 && tableBoard[x][y - 1].controlledBy?.playerInfo.name === playerName
 
-		console.log({ x, y, topPosition })
-
 		const bottomPosition =
 			y + 1 < tableBoard[0].length &&
 			tableBoard[x][y + 1].controlledBy?.playerInfo.name === playerName
-
-		console.log({ x, y, bottomPosition })
 
 		return leftPosition || rightPosition || topPosition || bottomPosition
 	}

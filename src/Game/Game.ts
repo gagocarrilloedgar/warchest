@@ -75,7 +75,6 @@ export class Game {
 			}
 		} catch (error: unknown) {
 			this.drawInvalidAction()
-			this.prompter.close()
 		}
 
 		await this.play()
