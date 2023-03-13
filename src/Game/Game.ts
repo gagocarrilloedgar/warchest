@@ -70,6 +70,7 @@ export class Game {
 				this.questionCount--
 				this.drawPlayerWithBoard()
 			} else {
+				this.playerTurn.refill()
 				this.swithPlayerTurn()
 				this.drawPlayerWithBoard()
 			}

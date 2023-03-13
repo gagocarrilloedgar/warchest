@@ -1,5 +1,7 @@
+import { Hand } from "../Player/Hand"
 import { PlayerTurnInfo } from "../Player/Player"
-import { UnitCollection } from "../Player/PlayerRecruitment"
+import { PlayerDiscards } from "../Player/PlayerDiscards"
+import { PlayerRecruitment } from "../Player/PlayerRecruitment"
 import { Prompter } from "../shared/Prompter"
 import { UnitType } from "../Unit/UnitType"
 
@@ -22,19 +24,30 @@ export class GamePrompter extends Prompter {
 
 	private printInfo(
 		controlTokens: number,
-		hands?: UnitType[],
-		recruits?: UnitCollection[],
-		discards?: { quanity: number; type: string }[]
+		hands?: Hand,
+		recruits?: PlayerRecruitment,
+		discards?: PlayerDiscards
 	): void {
 		const recruitsToPrint = recruits
-			? recruits.map((recruit) => `${recruit.count} ${recruit.unit.type.value}`).join(", ")
+			? recruits
+					.getAvailableUnits()
+					.map((recruit) => `${recruit.count} ${this.capitalize(recruit.unit.type.value)}`)
+					.join(", ")
 			: ""
 
 		const discardsToPrints = discards
-			? discards.map((discard) => `${discard.quanity} ${discard.type}`).join(", ")
+			? discards
+					.getAvailableUnits()
+					.map((discard) => `${discard.count} ${this.capitalize(discard.unit.type.value)}`)
+					.join(", ")
 			: ""
 
-		const handsToPrint = hands ? hands.map((unitType: UnitType) => unitType.value).join(", ") : ""
+		const handsToPrint = hands
+			? hands
+					.getUnitTypesAvailable()
+					.map((unitType: UnitType) => this.capitalize(unitType.value))
+					.join(", ")
+			: ""
 
 		const handInfo = `Hand: ${handsToPrint}`
 
@@ -47,5 +60,13 @@ export class GamePrompter extends Prompter {
 		const printAbleInfo = [handInfo, recruitInfo, discardInfo, controlTokenInfo].join("\n")
 
 		console.log(printAbleInfo)
+	}
+
+	private capitalize(string: string): string {
+		if (!string) {
+			return string
+		}
+
+		return string.toLowerCase().charAt(0).toUpperCase() + string.toLowerCase().slice(1)
 	}
 }

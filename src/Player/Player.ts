@@ -3,23 +3,24 @@ import { ActionFactory } from "../Actions/ActionFactory"
 import { Board } from "../Board/Board"
 import { PromptQuestion } from "../shared/Prompter"
 import { Unit } from "../Unit/Unit"
-import { UnitType, UnitTypes } from "../Unit/UnitType"
+import { UnitTypes } from "../Unit/UnitType"
 import { Hand } from "./Hand"
 import { PlayerBag } from "./PlayerBag"
-import { PlayerRecruitment, UnitCollection } from "./PlayerRecruitment"
+import { PlayerDiscards } from "./PlayerDiscards"
+import { PlayerRecruitment } from "./PlayerRecruitment"
 
 export interface PlayerTurnInfo {
 	name: string
 	controlTokens: number
-	hand: UnitType[]
-	recruits: UnitCollection[]
-	discards: { quanity: number; type: string }[]
+	hand: Hand
+	recruits: PlayerRecruitment
+	discards: PlayerDiscards
 }
 
 export class Player {
 	private readonly hand: Hand
 	private readonly recruits: PlayerRecruitment
-	private readonly discards: { quanity: number; type: string }[]
+	private readonly discards: PlayerDiscards
 	private readonly controlTokens: number
 	private readonly name: string
 	private readonly bag: PlayerBag
@@ -37,9 +38,8 @@ export class Player {
 		this.unitsInBoard = []
 		this.recruits = new PlayerRecruitment(playerTypes, this.UNITS_FOR_THE_BAG)
 		this.bag = new PlayerBag(playerTypes, this.UNITS_FOR_THE_BAG)
-		this.hand = new Hand(this.bag.getThreeRandomUnits())
-
-		this.discards = []
+		this.hand = new Hand(this.bag.getRandomUnits(3))
+		this.discards = new PlayerDiscards()
 		this.controlTokens = conrolTokens
 	}
 
@@ -47,10 +47,14 @@ export class Player {
 		return {
 			name: this.name,
 			controlTokens: this.controlTokens,
-			hand: this.hand.getUnitTypesAvailable(),
-			recruits: this.recruits.getAvailableUnits(),
+			hand: this.hand,
+			recruits: this.recruits,
 			discards: this.discards
 		}
+	}
+
+	public get getBag(): PlayerBag {
+		return this.bag
 	}
 
 	public async nextAction(
@@ -68,8 +72,10 @@ export class Player {
 			const action = ActionFactory.create(actionType)
 			const answers: string[] = []
 
+			// Ask the questions
 			await this.askQuestion(action.movements, answers, propmpter, board)
 
+			// Execute the action
 			await action.execute(answers, board, this)
 		} catch (error: Error | unknown) {
 			if (error instanceof Error) {
@@ -79,6 +85,10 @@ export class Player {
 		}
 
 		return true
+	}
+
+	public refill(): void {
+		this.hand.refillHand(this.bag)
 	}
 
 	public placeUnitOnBoard(unit: Unit, position: { x: number; y: number }): void {

@@ -92,8 +92,6 @@ export class Board {
 		// Check if is control zone and add player to control zone
 		const isPotentialControlZone = this.isControlZone(this.NEUTRAL_ZONES, to.x, to.y)
 
-		console.log({ isPotentialControlZone })
-
 		if (isPotentialControlZone) {
 			const isWolf = player.playerInfo.name === "wolf"
 

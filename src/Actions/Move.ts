@@ -17,9 +17,6 @@ export class Move implements Action {
 		"Where do you want to move? (final position: y,x)"
 	]
 
-	private readonly WHICH_UNIT = "Which unit do you want to move? (initial position: y,x)"
-	private readonly WHERE_TO_MOVE = "Where do you want to move? (final position: y,x)"
-
 	public async execute(answers: string[], board: Board, player: Player): Promise<void> {
 		try {
 			const from = answers[0]

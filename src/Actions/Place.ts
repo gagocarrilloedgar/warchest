@@ -31,6 +31,7 @@ export class Place implements Action {
 			const unitType = UnitType.fromValue(unitTypeString.toUpperCase() as UnitTypes)
 
 			const availableTypes = hand
+				.getUnitTypesAvailable()
 				.map((type: UnitType) => type.value)
 				.filter((value) => value !== UnitTypes.ROYAL)
 
