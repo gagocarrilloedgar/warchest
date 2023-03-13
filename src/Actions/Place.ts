@@ -1,7 +1,6 @@
 import { Board } from "../Board/Board"
 import { Player } from "../Player/Player"
 import { Position } from "../shared/Position"
-import { Prompter, PromptQuestion } from "../shared/Prompter"
 import { Unit } from "../Unit/Unit"
 import { UnitType, UnitTypes } from "../Unit/UnitType"
 import { Action, ActionType, ActionTypes } from "./Action"
@@ -14,20 +13,20 @@ class PlaceError extends Error {
 
 export class Place implements Action {
 	public readonly type: ActionType = new ActionType(ActionTypes.PLACE)
-	private readonly propmpter: Prompter
+	public readonly movements = [
+		"Which unit from your hand do you want to place?",
+		"Where do you want to place your unit? (y,x)"
+	]
 
 	private readonly WHERE_TO_PLACE: string = "Where do you want to place your unit? (y,x)"
 	private readonly WHICH_UNIT: string = "Which unit from your hand do you want to place?"
 
-	constructor() {
-		this.propmpter = new Prompter()
-	}
-
-	public async execute(board: Board, player: Player, propmpter: PromptQuestion): Promise<void> {
+	public async execute(answers: string[], board: Board, player: Player): Promise<void> {
 		try {
 			const hand = player.playerInfo.hand
 
-			const unitTypeString = await propmpter.prompt(this.WHICH_UNIT)
+			const unitTypeString = answers[0]
+			const answer2 = answers[1]
 
 			const unitType = UnitType.fromValue(unitTypeString.toUpperCase() as UnitTypes)
 
@@ -42,8 +41,6 @@ export class Place implements Action {
 			}
 
 			const newUnit = new Unit(unitType)
-
-			const answer2 = await propmpter.prompt(this.WHERE_TO_PLACE)
 
 			const [x, y] = answer2.split(",").map((value) => parseInt(value, 10))
 
@@ -63,7 +60,7 @@ export class Place implements Action {
 			if (error instanceof PlaceError) {
 				console.log(error.message)
 			}
-			await this.execute(board, player, propmpter)
+			await this.execute(answers, board, player)
 		}
 	}
 

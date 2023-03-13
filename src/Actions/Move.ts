@@ -1,7 +1,6 @@
 import { Board } from "../Board/Board"
 import { Player } from "../Player/Player"
 import { BoardPosition, Position } from "../shared/Position"
-import { PromptQuestion } from "../shared/Prompter"
 import { Directions, Unit } from "../Unit/Unit"
 import { Action, ActionType, ActionTypes } from "./Action"
 
@@ -13,14 +12,21 @@ class MoveError extends Error {
 
 export class Move implements Action {
 	public readonly type: ActionType = new ActionType(ActionTypes.MOVE)
+	public readonly movements = [
+		"Which unit do you want to move? (initial position: y,x)",
+		"Where do you want to move? (final position: y,x)"
+	]
 
 	private readonly WHICH_UNIT = "Which unit do you want to move? (initial position: y,x)"
 	private readonly WHERE_TO_MOVE = "Where do you want to move? (final position: y,x)"
 
-	public async execute(board: Board, player: Player, propmpter: PromptQuestion): Promise<void> {
+	public async execute(answers: string[], board: Board, player: Player): Promise<void> {
 		try {
-			const from = await propmpter.prompt(this.WHICH_UNIT)
+			const from = answers[0]
+			const to = answers[1]
+
 			const fromPosition = BoardPosition.fromString(from)
+			const toPosition = BoardPosition.fromString(to)
 
 			const unitToMove = board.getBoard[fromPosition.x][fromPosition.y].unit
 
@@ -31,9 +37,6 @@ export class Move implements Action {
 			if (!this.isStartPositionOwnedByPlayer(board, fromPosition, player)) {
 				throw new MoveError("This unit is not yours.")
 			}
-
-			const to = await propmpter.prompt(this.WHERE_TO_MOVE)
-			const toPosition = BoardPosition.fromString(to)
 
 			if (unitToMove && !this.isDeltaMoveValid(fromPosition, toPosition, unitToMove)) {
 				throw new MoveError("This unit cannot move that far.")
@@ -51,7 +54,7 @@ export class Move implements Action {
 				console.log(error.message)
 			}
 
-			await this.execute(board, player, propmpter)
+			await this.execute(answers, board, player)
 		}
 	}
 

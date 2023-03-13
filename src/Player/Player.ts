@@ -55,22 +55,27 @@ export class Player {
 
 	public async nextAction(
 		board: Board,
-		action: ActionType,
+		actionType: ActionType,
 		propmpter: PromptQuestion
 	): Promise<boolean> {
-		if (action.value === ActionTypes.FORFEIT) {
+		if (actionType.value === ActionTypes.FORFEIT) {
 			console.log(`Player ${this.name} has forfeited the game!`)
 
 			return false
 		}
 
 		try {
-			await ActionFactory.create(action).execute(board, this, propmpter)
+			const action = ActionFactory.create(actionType)
+			const answers: string[] = []
+
+			await this.askQuestion(action.movements, answers, propmpter, board)
+
+			await action.execute(answers, board, this)
 		} catch (error: Error | unknown) {
 			if (error instanceof Error) {
 				console.log(error.message)
 			}
-			await this.nextAction(board, action, propmpter)
+			await this.nextAction(board, actionType, propmpter)
 		}
 
 		return true
@@ -82,5 +87,21 @@ export class Player {
 
 	public removeUnit(unit: Unit): void {
 		this.hand.removeSelectedUnit(unit)
+	}
+
+	private async askQuestion(
+		questions: string[],
+		answers: string[],
+		propmpter: PromptQuestion,
+		board: Board
+	): Promise<void> {
+		if (questions.length > 0) {
+			const question = questions.shift() as string
+
+			const answer = await propmpter.prompt(question)
+			answers.push(answer)
+
+			await this.askQuestion(questions, answers, propmpter, board)
+		}
 	}
 }
