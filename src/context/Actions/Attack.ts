@@ -6,7 +6,7 @@ import { Action, ActionType, ActionTypes } from "./Action"
 
 class AttackError extends Error {
 	constructor(message: string) {
-		super(`MoveError: ${message}`)
+		super(`AttackError: ${message}`)
 	}
 }
 
