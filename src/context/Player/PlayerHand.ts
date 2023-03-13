@@ -1,8 +1,7 @@
-import { Unit } from "../Unit/Unit"
-import { UnitType } from "../Unit/UnitType"
+import { Unit, UnitType } from "../Unit"
 import { PlayerBag } from "./PlayerBag"
 
-export class Hand {
+export class PlayerHand {
 	private readonly units: Unit[] = []
 	private readonly MAX_UNITS = 3
 

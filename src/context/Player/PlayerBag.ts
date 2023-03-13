@@ -1,6 +1,5 @@
-import { Unit } from "../Unit/Unit"
-import { UnitType, UnitTypes } from "../Unit/UnitType"
-import { UnitCollection } from "./PlayerDiscards"
+import { UnitCollection } from "../shared"
+import { Unit, UnitType, UnitTypes } from "../Unit"
 
 export class PlayerBag {
 	private readonly units: UnitCollection[] = []

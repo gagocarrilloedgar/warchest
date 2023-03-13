@@ -1,6 +1,6 @@
-import { Board } from "../Board/Board"
-import { Player } from "../Player/Player"
-import { EnumValueObject } from "../shared/EnumValueObject"
+import { Board } from "../Board"
+import { Player } from "../Player"
+import { EnumValueObject } from "../shared"
 
 export enum ActionTypes {
 	PLACE = "place",

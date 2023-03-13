@@ -1,7 +1,7 @@
-import { ActionType } from "../Actions/Action"
-import { Board } from "../Board/Board"
-import { Player } from "../Player/Player"
-import { UnitTypes } from "../Unit/UnitType"
+import { ActionType } from "../Actions"
+import { Board } from "../Board"
+import { Player } from "../Player"
+import { UnitTypes } from "../Unit"
 import { GamePrompter } from "./GamePrompter"
 
 export class Game {

@@ -1,10 +1,5 @@
-import { Unit } from "../Unit/Unit"
-import { UnitType, UnitTypes } from "../Unit/UnitType"
-
-export interface UnitCollection {
-	count: number
-	unit: Unit
-}
+import { UnitCollection } from "../shared"
+import { Unit, UnitType, UnitTypes } from "../Unit"
 
 export class PlayerRecruitment {
 	units: UnitCollection[]

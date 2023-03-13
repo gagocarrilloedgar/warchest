@@ -1,9 +1,6 @@
-import { Hand } from "../Player/Hand"
-import { PlayerTurnInfo } from "../Player/Player"
-import { PlayerDiscards } from "../Player/PlayerDiscards"
-import { PlayerRecruitment } from "../Player/PlayerRecruitment"
-import { Prompter } from "../shared/Prompter"
-import { UnitType } from "../Unit/UnitType"
+import { PlayerDiscards, PlayerHand, PlayerRecruitment, PlayerTurnInfo } from "../Player"
+import { Prompter } from "../shared"
+import { UnitType } from "../Unit"
 
 interface StartPromptProps {
 	message: string
@@ -24,7 +21,7 @@ export class GamePrompter extends Prompter {
 
 	private printInfo(
 		controlTokens: number,
-		hands?: Hand,
+		hands?: PlayerHand,
 		recruits?: PlayerRecruitment,
 		discards?: PlayerDiscards
 	): void {

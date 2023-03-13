@@ -1,8 +1,7 @@
-import { Board } from "../Board/Board"
-import { Player } from "../Player/Player"
-import { Position } from "../shared/Position"
-import { Unit } from "../Unit/Unit"
-import { UnitType, UnitTypes } from "../Unit/UnitType"
+import { Board } from "../Board"
+import { Player } from "../Player"
+import { Position } from "../shared"
+import { Unit, UnitType, UnitTypes } from "../Unit"
 import { Action, ActionType, ActionTypes } from "./Action"
 
 class PlaceError extends Error {

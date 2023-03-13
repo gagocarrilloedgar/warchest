@@ -1,24 +1,22 @@
-import { ActionType, ActionTypes } from "../Actions/Action"
-import { ActionFactory } from "../Actions/ActionFactory"
-import { Board } from "../Board/Board"
-import { PromptQuestion } from "../shared/Prompter"
-import { Unit } from "../Unit/Unit"
-import { UnitTypes } from "../Unit/UnitType"
-import { Hand } from "./Hand"
+import { ActionFactory, ActionType, ActionTypes } from "../Actions"
+import { Board } from "../Board"
+import { PromptQuestion } from "../shared"
+import { Unit, UnitTypes } from "../Unit"
 import { PlayerBag } from "./PlayerBag"
 import { PlayerDiscards } from "./PlayerDiscards"
+import { PlayerHand } from "./PlayerHand"
 import { PlayerRecruitment } from "./PlayerRecruitment"
 
 export interface PlayerTurnInfo {
 	name: string
 	controlTokens: number
-	hand: Hand
+	hand: PlayerHand
 	recruits: PlayerRecruitment
 	discards: PlayerDiscards
 }
 
 export class Player {
-	private readonly hand: Hand
+	private readonly hand: PlayerHand
 	private readonly recruits: PlayerRecruitment
 	private readonly discards: PlayerDiscards
 	private readonly controlTokens: number
@@ -38,7 +36,7 @@ export class Player {
 		this.unitsInBoard = []
 		this.recruits = new PlayerRecruitment(playerTypes, this.UNITS_FOR_THE_BAG)
 		this.bag = new PlayerBag(playerTypes, this.UNITS_FOR_THE_BAG)
-		this.hand = new Hand(this.bag.getRandomUnits(3))
+		this.hand = new PlayerHand(this.bag.getRandomUnits(3))
 		this.discards = new PlayerDiscards()
 		this.controlTokens = conrolTokens
 	}

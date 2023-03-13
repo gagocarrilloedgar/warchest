@@ -1,7 +1,7 @@
-import { Board } from "../Board/Board"
-import { Player } from "../Player/Player"
-import { BoardPosition, Position } from "../shared/Position"
-import { Directions, Unit } from "../Unit/Unit"
+import { Board } from "../Board"
+import { Player } from "../Player"
+import { BoardPosition, Position } from "../shared"
+import { Directions, Unit } from "../Unit"
 import { Action, ActionType, ActionTypes } from "./Action"
 
 class MoveError extends Error {
