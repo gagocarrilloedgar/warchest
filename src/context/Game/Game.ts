@@ -18,7 +18,7 @@ export class Game {
 	private questionCount = this.MAX_QUESTIONS
 	private playerTurn: Player
 
-	constructor() {
+	constructor(usersList: string) {
 		this.board = new Board(5)
 		this.aviailableUnits = Object.values(UnitTypes).filter(
 			(type: UnitTypes) => type !== UnitTypes.ROYAL
@@ -33,7 +33,7 @@ export class Game {
 		this.playerTurn = this.wolf
 
 		this.board.addControlledZones(this.wolf, this.crown)
-
+		this.showPreviousUsers(usersList)
 		this.initGame()
 	}
 
@@ -84,6 +84,18 @@ export class Game {
 		}
 
 		await this.play()
+	}
+
+	private showPreviousUsers(userList: string): void {
+		const arrayOfInfo = [
+			"",
+			"Welcome to the game of the wolf and the crown. Below you can see the previous users that have played this game: ",
+			"",
+			userList,
+			""
+		]
+
+		console.log(arrayOfInfo.join("\n"))
 	}
 
 	private drawInvalidAction(): void {
