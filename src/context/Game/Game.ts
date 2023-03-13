@@ -12,8 +12,9 @@ export class Game {
 	private readonly wolf: Player
 	private readonly crown: Player
 	private readonly board: Board
-
 	private readonly prompter: GamePrompter
+
+	private initiative: string
 	private selectedAction: ActionType | undefined
 	private questionCount = this.MAX_QUESTIONS
 	private playerTurn: Player
@@ -31,6 +32,7 @@ export class Game {
 		this.wolf = new Player("wolf", this.MAX_CONTROL_TOKENS, wolfUnits)
 		this.crown = new Player("crown", this.MAX_CONTROL_TOKENS, leftUnits)
 		this.playerTurn = this.wolf
+		this.initiative = this.wolf.playerInfo.name
 
 		this.board.addControlledZones(this.wolf, this.crown)
 		this.showPreviousUsers(usersList)
@@ -84,6 +86,14 @@ export class Game {
 		}
 
 		await this.play()
+	}
+
+	public givePlayerInitiative(player: Player): void {
+		const currentInitiative = this.initiative
+
+		if (currentInitiative !== player.playerInfo.name) {
+			this.initiative = player.playerInfo.name
+		}
 	}
 
 	private showPreviousUsers(userList: string): void {

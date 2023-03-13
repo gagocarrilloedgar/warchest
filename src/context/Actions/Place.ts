@@ -17,9 +17,6 @@ export class Place implements Action {
 		"Where do you want to place your unit? (y,x)"
 	]
 
-	private readonly WHERE_TO_PLACE: string = "Where do you want to place your unit? (y,x)"
-	private readonly WHICH_UNIT: string = "Which unit from your hand do you want to place?"
-
 	public async execute(answers: string[], board: Board, player: Player): Promise<void> {
 		try {
 			const hand = player.playerInfo.hand
