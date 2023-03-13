@@ -128,6 +128,13 @@ export class Board {
 		return this.board
 	}
 
+	public getControlledZones(): { wolf: number; crown: number } {
+		return {
+			wolf: this.WOLF_ZONES.length,
+			crown: this.CROWN_ZONES.length
+		}
+	}
+
 	private createBoard(): { value: string; controlledBy: Player | null; unit: Unit | null }[][] {
 		return Array.from({ length: this.SIZE }, () =>
 			Array.from({ length: this.SIZE }, () => {
@@ -168,41 +175,5 @@ export class Board {
 
 	private checkIfPositionIsInBoard(position: Position): boolean {
 		return position.x >= 0 && position.x < this.SIZE && position.y >= 0 && position.y < this.SIZE
-	}
-
-	private checkIfPositionIsOrthogonalyAdjacentToAnyPlayerUnit(
-		position: Position,
-		player: Player
-	): boolean {
-		const playerUnits = player.playerInfo.name === "Wolf" ? this.WOLF_ZONES : this.CROWN_ZONES
-
-		return playerUnits.some((playerUnit) => {
-			const { x, y } = playerUnit
-
-			return (
-				(x === position.x && y === position.y + 1) ||
-				(x === position.x && y === position.y - 1) ||
-				(x === position.x + 1 && y === position.y) ||
-				(x === position.x - 1 && y === position.y)
-			)
-		})
-	}
-
-	private checkIfPositionIsDiagonallyAdjacentToAnyPlayerUnit(
-		position: Position,
-		player: Player
-	): boolean {
-		const playerUnits = player.playerInfo.name === "Wolf" ? this.WOLF_ZONES : this.CROWN_ZONES
-
-		return playerUnits.some((playerUnit) => {
-			const { x, y } = playerUnit
-
-			return (
-				(x === position.x + 1 && y === position.y + 1) ||
-				(x === position.x + 1 && y === position.y - 1) ||
-				(x === position.x - 1 && y === position.y + 1) ||
-				(x === position.x - 1 && y === position.y - 1)
-			)
-		})
 	}
 }

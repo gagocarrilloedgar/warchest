@@ -78,6 +78,11 @@ export class Game {
 			this.drawInvalidAction()
 		}
 
+		if (this.hasThePlayerWon()) {
+			console.log(`Player ${this.playerTurn.playerInfo.name} has won the game`)
+			this.prompter.close()
+		}
+
 		await this.play()
 	}
 
@@ -85,6 +90,17 @@ export class Game {
 		const spaces = " ".repeat(4)
 		const arrayOfInfo = [spaces, "Invalid action, please try again", spaces]
 		console.log(arrayOfInfo.join("\n"))
+	}
+
+	private hasThePlayerWon(): boolean {
+		const playersControlZones = this.board.getControlledZones()
+		const isWolfPlaying = this.playerTurn.playerInfo.name === this.wolf.playerInfo.name
+
+		const hasTheCurrentPlayerWon = isWolfPlaying
+			? playersControlZones.wolf === this.MAX_CONTROL_TOKENS
+			: playersControlZones.crown === this.MAX_CONTROL_TOKENS
+
+		return hasTheCurrentPlayerWon
 	}
 
 	private drawPlayerWithBoard(): void {
