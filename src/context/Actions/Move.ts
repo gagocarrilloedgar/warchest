@@ -26,6 +26,11 @@ export class Move implements Action {
 			const toPosition = BoardPosition.fromString(to)
 
 			const unitToMove = board.getBoard[fromPosition.x][fromPosition.y].unit
+			const hand = player.playerInfo.hand
+
+			if (!unitToMove) {
+				throw new MoveError("There is no unit on this position.")
+			}
 
 			if (!this.doesPositionContainUnit(board, fromPosition)) {
 				throw new MoveError("There is no unit on this position.")
@@ -35,7 +40,11 @@ export class Move implements Action {
 				throw new MoveError("This unit is not yours.")
 			}
 
-			if (unitToMove && !this.isDeltaMoveValid(fromPosition, toPosition, unitToMove)) {
+			if (!hand.containsUnitType(unitToMove.type)) {
+				throw new MoveError("You do not have this unit in your hand.")
+			}
+
+			if (!this.isDeltaMoveValid(fromPosition, toPosition, unitToMove)) {
 				throw new MoveError("This unit cannot move that far.")
 			}
 
@@ -43,9 +52,14 @@ export class Move implements Action {
 				throw new MoveError("This position is not free.")
 			}
 
-			if (unitToMove) {
-				board.moveUnitOnBoard(unitToMove, fromPosition, toPosition, player)
-			}
+			// We move the unit at the board level
+			board.moveUnitOnBoard(unitToMove, fromPosition, toPosition, player)
+
+			// We remove the unit from the player's hand
+			hand.removeSelectedUnit(unitToMove)
+
+			// We add the unit to the discard pile
+			player.playerInfo.discards.addUnit(unitToMove.type)
 		} catch (error: MoveError | unknown) {
 			if (error instanceof Error) {
 				console.log(error.message)

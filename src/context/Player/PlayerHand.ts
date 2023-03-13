@@ -45,4 +45,8 @@ export class PlayerHand {
 			this.units.push(unit)
 		}
 	}
+
+	public containsUnitType(unitType: UnitType): boolean {
+		return this.getUnitTypesAvailable().includes(unitType)
+	}
 }

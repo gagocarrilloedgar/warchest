@@ -77,16 +77,16 @@ export class Swordsman extends Unit {
 		super(UnitType.fromValue(UnitTypes.SWORDSMAN))
 	}
 }
-export class Berserker extends Unit {
+export class Cavalry extends Unit {
 	deltaMove = 1
 	deltaAttack = 1
 	moveDirection = Directions.ORTHOGONAL
 	attackDirection = Directions.ORTHOGONAL
-	attackTimes = 2
+	attackTimes = 1
 	actions = 1
 
 	constructor() {
-		super(UnitType.fromValue(UnitTypes.BERSERKER))
+		super(UnitType.fromValue(UnitTypes.CAVALRY))
 	}
 }
 export class Mercenary extends Unit {
@@ -114,8 +114,8 @@ export class UnitFactory {
 				return new Archer()
 			case UnitTypes.SWORDSMAN:
 				return new Swordsman()
-			case UnitTypes.BERSERKER:
-				return new Berserker()
+			case UnitTypes.CAVALRY:
+				return new Cavalry()
 			case UnitTypes.MERCENARY:
 				return new Mercenary()
 			case UnitTypes.ROYAL:

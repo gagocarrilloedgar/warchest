@@ -2,7 +2,7 @@ import { EnumValueObject } from "../shared/EnumValueObject"
 
 export enum UnitTypes {
 	ARCHER = "ARCHER",
-	BERSERKER = "BERSERKER",
+	CAVALRY = "CAVALRY",
 	MERCENARY = "MERCENARY",
 	SWORDSMAN = "SWORDSMAN",
 	ROYAL = "ROYAL"
@@ -10,7 +10,7 @@ export enum UnitTypes {
 
 export enum UnitAcronyms {
 	ARCHER = "Ar",
-	BERSERKER = "Be",
+	CAVALRY = "Ca",
 	MERCENARY = "Me",
 	SWORDSMAN = "Sw",
 	ROYAL = "Ro"
@@ -18,7 +18,7 @@ export enum UnitAcronyms {
 
 export enum EnumUnitTypesCount {
 	ARCHER = 4,
-	BERSERKER = 4,
+	CAVALRY = 4,
 	MERCENARY = 5,
 	SWORDSMAN = 4,
 	ROYAL = 1
