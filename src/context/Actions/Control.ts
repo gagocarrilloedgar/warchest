@@ -29,7 +29,7 @@ export class Control implements Action {
 		}
 
 		player.discardUnit(unit.type)
-		board.controlZone(unit, controlPosition, player.getName)
+		board.controlZone(unit, controlPosition, player)
 		player.removeControlToken()
 	}
 }

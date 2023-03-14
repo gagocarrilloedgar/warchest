@@ -115,6 +115,7 @@ export class Game {
 			? playersControlZones.wolf === this.MAX_CONTROL_TOKENS
 			: playersControlZones.crown === this.MAX_CONTROL_TOKENS
 
+		// Here we still need to add the recruitment logic (if empty hands or recruitment zone is empty the other players should win)
 		return hasTheCurrentPlayerWon
 	}
 

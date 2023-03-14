@@ -1,7 +1,7 @@
 import { ActionFactory, ActionType, ActionTypes } from "../Actions"
 import { Board } from "../Board"
 import { PromptQuestion } from "../shared"
-import { Unit, UnitType, UnitTypes } from "../Unit"
+import { UnitType, UnitTypes } from "../Unit"
 import { PlayerBag } from "./PlayerBag"
 import { PlayerDiscards } from "./PlayerDiscards"
 import { PlayerHand } from "./PlayerHand"
@@ -24,22 +24,14 @@ export class Player {
 	private readonly controlTokens: number
 	private readonly name: string
 	private readonly bag: PlayerBag
-	private readonly unitsInBoard: {
-		position: {
-			x: number
-			y: number
-		}
-		unit: Unit
-	}[]
 
 	private initiativeToken = 0
 
 	constructor(name: string, conrolTokens: number, playerTypes: UnitTypes[]) {
 		this.name = name
-		this.unitsInBoard = []
 		this.recruits = new PlayerRecruitment(playerTypes, this.UNITS_FOR_THE_BAG)
 		this.bag = new PlayerBag(playerTypes, this.UNITS_FOR_THE_BAG)
-		this.hand = new PlayerHand(this.bag.getRandomUnits(3))
+		this.hand = new PlayerHand(this.bag.getRandomUnits(2))
 		this.discards = new PlayerDiscards()
 		this.controlTokens = conrolTokens
 	}
