@@ -8,13 +8,13 @@ export class Game {
 	private readonly MAX_CONTROL_TOKENS = 3
 	private readonly MAX_QUESTIONS = 2
 	private readonly MAX_UNITS_PER_PLAYER = 2
+	private readonly MAX_TURNES = 1
 	private readonly aviailableUnits: UnitTypes[]
 	private readonly wolf: Player
 	private readonly crown: Player
 	private readonly board: Board
 	private readonly prompter: GamePrompter
 
-	private initiative: string
 	private selectedAction: ActionType | undefined
 	private questionCount = this.MAX_QUESTIONS
 	private playerTurn: Player
@@ -24,6 +24,7 @@ export class Game {
 		this.aviailableUnits = Object.values(UnitTypes).filter(
 			(type: UnitTypes) => type !== UnitTypes.ROYAL
 		)
+
 		this.prompter = new GamePrompter()
 
 		const wolfUnits = this.randomizeUnits()
@@ -31,8 +32,8 @@ export class Game {
 
 		this.wolf = new Player("wolf", this.MAX_CONTROL_TOKENS, wolfUnits)
 		this.crown = new Player("crown", this.MAX_CONTROL_TOKENS, leftUnits)
+
 		this.playerTurn = this.wolf
-		this.initiative = this.wolf.playerInfo.name
 
 		this.board.addControlledZones(this.wolf, this.crown)
 		this.showPreviousUsers(usersList)
@@ -88,14 +89,6 @@ export class Game {
 		await this.play()
 	}
 
-	public givePlayerInitiative(player: Player): void {
-		const currentInitiative = this.initiative
-
-		if (currentInitiative !== player.playerInfo.name) {
-			this.initiative = player.playerInfo.name
-		}
-	}
-
 	private showPreviousUsers(userList: string): void {
 		const arrayOfInfo = [
 			"",
@@ -147,7 +140,19 @@ export class Game {
 	}
 
 	private swithPlayerTurn(): void {
-		this.playerTurn === this.wolf ? (this.playerTurn = this.crown) : (this.playerTurn = this.wolf)
+		const wolfIntiativeToken = this.wolf.getInitiative()
+		const crownIntiativeToken = this.crown.getInitiative()
+
+		const diff = wolfIntiativeToken - crownIntiativeToken
+
+		if (diff === 0) {
+			this.playerTurn = this.playerTurn === this.wolf ? this.crown : this.wolf
+		} else if (diff > 0) {
+			this.playerTurn = this.crown
+		} else {
+			this.playerTurn = this.wolf
+		}
+
 		this.questionCount = this.MAX_QUESTIONS
 	}
 }

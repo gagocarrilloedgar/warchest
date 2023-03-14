@@ -13,52 +13,45 @@ class PlaceError extends Error {
 export class Place implements Action {
 	public readonly type: ActionType = new ActionType(ActionTypes.PLACE)
 	public readonly movements = [
-		"Which unit from your hand do you want to place?",
-		"Where do you want to place your unit? (y,x)"
+		"Which unit from your hand do you want to place?: ",
+		"Where do you want to place your unit? (y,x): "
 	]
 
-	public async execute(answers: string[], board: Board, player: Player): Promise<void> {
-		try {
-			const hand = player.playerInfo.hand
+	public execute(answers: string[], board: Board, player: Player): void {
+		const hand = player.playerInfo.hand
 
-			const unitTypeString = answers[0]
-			const answer2 = answers[1]
+		const unitTypeString = answers[0]
+		const answer2 = answers[1]
 
-			const unitType = UnitType.fromValue(unitTypeString.toUpperCase() as UnitTypes)
+		const unitType = UnitType.fromValue(unitTypeString.toUpperCase() as UnitTypes)
 
-			const availableTypes = hand
-				.getUnitTypesAvailable()
-				.map((type: UnitType) => type.value)
-				.filter((value) => value !== UnitTypes.ROYAL)
+		const availableTypes = hand
+			.getUnitTypesAvailable()
+			.map((type: UnitType) => type.value)
+			.filter((value) => value !== UnitTypes.ROYAL)
 
-			const isAvailable = availableTypes.includes(unitType.value)
+		const isAvailable = availableTypes.includes(unitType.value)
 
-			if (!isAvailable) {
-				throw new PlaceError("Unit not available in hand.")
-			}
-
-			const newUnit = new Unit(unitType)
-
-			const [x, y] = answer2.split(",").map((value) => parseInt(value, 10))
-
-			const isPosible = this.checkIfPositionHasAdjacentControlZone(player.playerInfo.name, board, {
-				x,
-				y
-			})
-
-			if (!isPosible) {
-				throw new PlaceError("Position is not adjacent to any of your units.")
-			}
-
-			player.removeUnit(newUnit)
-			player.placeUnitOnBoard(new Unit(unitType), { x, y })
-			board.placeUnitOnBoard(new Unit(unitType), { x, y }, player)
-		} catch (error: PlaceError | unknown) {
-			if (error instanceof PlaceError) {
-				console.log(error.message)
-			}
-			await this.execute(answers, board, player)
+		if (!isAvailable) {
+			throw new PlaceError("Unit not available in hand.")
 		}
+
+		const newUnit = new Unit(unitType)
+
+		const [x, y] = answer2.split(",").map((value) => parseInt(value, 10))
+
+		const isPosible = this.checkIfPositionHasAdjacentControlZone(player.playerInfo.name, board, {
+			x,
+			y
+		})
+
+		if (!isPosible) {
+			throw new PlaceError("Position is not adjacent to any of your units.")
+		}
+
+		player.removeUnit(newUnit)
+		player.placeUnitOnBoard(new Unit(unitType), { x, y })
+		board.placeUnitOnBoard(new Unit(unitType), { x, y }, player)
 	}
 
 	private checkIfPositionHasAdjacentControlZone(

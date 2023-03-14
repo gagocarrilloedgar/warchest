@@ -17,56 +17,48 @@ export class Move implements Action {
 		"Where do you want to move? (final position: y,x)"
 	]
 
-	public async execute(answers: string[], board: Board, player: Player): Promise<void> {
-		try {
-			const from = answers[0]
-			const to = answers[1]
+	public execute(answers: string[], board: Board, player: Player): void {
+		const from = answers[0]
+		const to = answers[1]
 
-			const fromPosition = BoardPosition.fromString(from)
-			const toPosition = BoardPosition.fromString(to)
+		const fromPosition = BoardPosition.fromString(from)
+		const toPosition = BoardPosition.fromString(to)
 
-			const unitToMove = board.getBoard[fromPosition.x][fromPosition.y].unit
-			const hand = player.playerInfo.hand
+		const unitToMove = board.getBoard[fromPosition.x][fromPosition.y].unit
+		const hand = player.playerInfo.hand
 
-			if (!unitToMove) {
-				throw new MoveError("There is no unit on this position.")
-			}
-
-			if (!this.doesPositionContainUnit(board, fromPosition)) {
-				throw new MoveError("There is no unit on this position.")
-			}
-
-			if (!this.isStartPositionOwnedByPlayer(board, fromPosition, player)) {
-				throw new MoveError("This unit is not yours.")
-			}
-
-			if (!hand.containsUnitType(unitToMove.type)) {
-				throw new MoveError("You do not have this unit in your hand.")
-			}
-
-			if (!this.isDeltaMoveValid(fromPosition, toPosition, unitToMove)) {
-				throw new MoveError("This unit cannot move that far.")
-			}
-
-			if (!this.isEndPositionFree(board, toPosition)) {
-				throw new MoveError("This position is not free.")
-			}
-
-			// We move the unit at the board level
-			board.moveUnitOnBoard(unitToMove, fromPosition, toPosition, player)
-
-			// We remove the unit from the player's hand
-			hand.removeSelectedUnit(unitToMove)
-
-			// We add the unit to the discard pile
-			player.playerInfo.discards.addUnit(unitToMove.type)
-		} catch (error: MoveError | unknown) {
-			if (error instanceof Error) {
-				console.log(error.message)
-			}
-
-			await this.execute(answers, board, player)
+		if (!unitToMove) {
+			throw new MoveError("There is no unit on this position.")
 		}
+
+		if (!this.doesPositionContainUnit(board, fromPosition)) {
+			throw new MoveError("There is no unit on this position.")
+		}
+
+		if (!this.isStartPositionOwnedByPlayer(board, fromPosition, player)) {
+			throw new MoveError("This unit is not yours.")
+		}
+
+		if (!hand.containsUnitType(unitToMove.type)) {
+			throw new MoveError("You do not have this unit in your hand.")
+		}
+
+		if (!this.isDeltaMoveValid(fromPosition, toPosition, unitToMove)) {
+			throw new MoveError("This unit cannot move that far.")
+		}
+
+		if (!this.isEndPositionFree(board, toPosition)) {
+			throw new MoveError("This position is not free.")
+		}
+
+		// We move the unit at the board level
+		board.moveUnitOnBoard(unitToMove, fromPosition, toPosition, player)
+
+		// We remove the unit from the player's hand
+		hand.removeSelectedUnit(unitToMove)
+
+		// We add the unit to the discard pile
+		player.playerInfo.discards.addUnit(unitToMove.type)
 	}
 
 	private isDeltaMoveValid(from: Position, to: Position, unit: Unit): boolean {

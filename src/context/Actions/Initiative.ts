@@ -33,11 +33,11 @@ export class Initiative implements Action {
 			}
 
 			// If everything is ok, we remove the unit from the player's hand
-			hand.removeSelectedUnit(newUnit)
+			// hand.removeSelectedUnit(newUnit)
 			// Then we add the unit to the discard pile
-			discards.addUnit(unitType)
+			// discards.addUnit(unitType)
 			// Then we add the initiative token to the player
-			console.log("To be implemented")
+			player.addInitiativeToken()
 		} catch (error) {
 			if (error instanceof InitiativeError) {
 				console.log(error.message)

@@ -16,13 +16,14 @@ export interface PlayerTurnInfo {
 }
 
 export class Player {
+	private readonly UNITS_FOR_THE_BAG = 2
+
 	private readonly hand: PlayerHand
 	private readonly recruits: PlayerRecruitment
 	private readonly discards: PlayerDiscards
 	private readonly controlTokens: number
 	private readonly name: string
 	private readonly bag: PlayerBag
-	private readonly UNITS_FOR_THE_BAG = 2
 	private readonly unitsInBoard: {
 		position: {
 			x: number
@@ -30,6 +31,8 @@ export class Player {
 		}
 		unit: Unit
 	}[]
+
+	private initiativeToken = 0
 
 	constructor(name: string, conrolTokens: number, playerTypes: UnitTypes[]) {
 		this.name = name
@@ -91,6 +94,18 @@ export class Player {
 
 	public placeUnitOnBoard(unit: Unit, position: { x: number; y: number }): void {
 		this.unitsInBoard.push({ position, unit })
+	}
+
+	public addInitiativeToken(): void {
+		this.initiativeToken = 1
+	}
+
+	public removeInitiativeToken(): void {
+		this.initiativeToken = 0
+	}
+
+	public getInitiative(): number {
+		return this.initiativeToken
 	}
 
 	public removeUnit(unit: Unit): void {
