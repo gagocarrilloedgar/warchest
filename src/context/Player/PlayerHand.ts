@@ -23,8 +23,6 @@ export class PlayerHand {
 			(unitInHand: Unit) => unitInHand.type.value === unit.type.value
 		)
 
-		console.log("index", index, unit.type.value)
-
 		if (index > -1) {
 			this.units.splice(index, 1)
 		}
@@ -53,6 +51,8 @@ export class PlayerHand {
 	}
 
 	public containsUnitType(unitType: UnitType): boolean {
-		return this.getUnitTypesAvailable().includes(unitType)
+		return this.getUnitTypesAvailable()
+			.map((type) => type.value)
+			.includes(unitType.value)
 	}
 }
