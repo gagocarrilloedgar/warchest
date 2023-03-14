@@ -1,4 +1,4 @@
-import { Board } from "../../src/Board/Board"
+import { Board } from "../../src/context/Board"
 
 describe("Board", () => {
 	it("Should be able to create a new board", () => {
@@ -12,7 +12,7 @@ describe("Board", () => {
 		const stringBoard = board.createDrawableBoard()
 
 		const expectedBoard =
-			"    0 1 2 3 4\n    ---------\n0 | . . . . .\n1 | . . @ @ .\n2 | . . . . .\n3 | . @ @ . .\n4 | . . . . ."
+			"    0 1 2 3 4\n    ---------\n0 | . . C . .\n1 | . @ . @ .\n2 | . . . . .\n3 | . @ . @ .\n4 | . . W . ."
 
 		expect(stringBoard).toEqual(expectedBoard)
 	})

@@ -14,6 +14,8 @@ export class PlayerBag {
 	public initBag(options: UnitTypes[]): void {
 		this.addUnit(UnitType.fromValue(UnitTypes.ROYAL))
 
+		options.filter((option: UnitTypes) => option !== UnitTypes.ROYAL)
+
 		options.forEach((option: UnitTypes) => {
 			for (let i = 0; i < this.MAX_UNITS_PER_TYPE; i++) {
 				this.addUnit(UnitType.fromValue(option))
@@ -21,7 +23,7 @@ export class PlayerBag {
 		})
 	}
 
-	getRandomUnits(numberToGive: number): Unit[] {
+	public getRandomUnits(numberToGive: number): Unit[] {
 		const unitsToGive: Unit[] = []
 
 		while (unitsToGive.length < numberToGive) {
@@ -34,15 +36,15 @@ export class PlayerBag {
 		return unitsToGive
 	}
 
-	removeUnit(unitType: UnitType): void {
-		const unit = this.units.find((unit: UnitCollection) => unit.unit.type === unitType)
+	public removeUnit(unitType: UnitType): void {
+		const unit = this.units.find((unit: UnitCollection) => unit.unit.type.value === unitType.value)
 
 		if (unit && unit.count > 0) {
 			this.units[this.units.indexOf(unit)].count--
 		}
 	}
 
-	addUnit(unitType: UnitType): void {
+	public addUnit(unitType: UnitType): void {
 		const unit = this.units.find((unit: UnitCollection) => unit.unit.type === unitType)
 
 		if (unit) {
@@ -53,5 +55,9 @@ export class PlayerBag {
 				unit: new Unit(unitType)
 			})
 		}
+	}
+
+	public getUnitsCount(): number {
+		return this.units.reduce((acc: number, unit: UnitCollection) => acc + unit.count, 0)
 	}
 }
