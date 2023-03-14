@@ -53,7 +53,7 @@ export class Attack implements Action {
 			throw new AttackError("This position is not controlled by an enemy.")
 		}
 
-		board.moveUnitOnBoard(attackUnit, fromPosition, fromPosition, player)
+		board.moveUnitOnBoard(attackUnit, fromPosition, fromPosition)
 		player.discardUnit(attackUnit.type)
 	}
 }

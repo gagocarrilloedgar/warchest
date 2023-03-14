@@ -41,6 +41,6 @@ export class Place implements Action {
 		}
 
 		player.removeUnit(newUnit.type)
-		board.placeUnitOnBoard(new Unit(unitType), position, player)
+		board.placeUnitOnBoard(new Unit(unitType), position)
 	}
 }

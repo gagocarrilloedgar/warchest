@@ -32,7 +32,6 @@ export class Recruit implements Action {
 
 		const isAvailable = handAvailableTypes.includes(unitToDiscard.value)
 		const isRecruitAvailable = recruitAvailableTypes.includes(unitToRecruit.value)
-		
 
 		if (!isAvailable) {
 			throw new RecruitError("Unit not available in hand.")

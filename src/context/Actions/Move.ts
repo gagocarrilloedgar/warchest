@@ -52,7 +52,7 @@ export class Move implements Action {
 			throw new MoveError("This unit cannot move that far.")
 		}
 
-		board.moveUnitOnBoard(unitToMove, fromPosition, toPosition, player)
+		board.moveUnitOnBoard(unitToMove, fromPosition, toPosition)
 		player.discardUnit(unitToMove.type)
 	}
 }

@@ -41,7 +41,7 @@ export class Game {
 	}
 
 	public initGame(): void {
-		this.drawPlayerWithBoard()
+		this.drawPlayerWithBoard(true)
 	}
 
 	public randomizeUnits = (): UnitTypes[] => {
@@ -118,9 +118,9 @@ export class Game {
 		return hasTheCurrentPlayerWon
 	}
 
-	private drawPlayerWithBoard(): void {
+	private drawPlayerWithBoard(init?: boolean): void {
 		const playerInfo = this.playerTurn.playerInfo
-		console.log(this.board.createDrawableBoard())
+		console.log(this.board.createDrawableBoard(init))
 		console.log(this.board.hashTagSeparator(playerInfo.name))
 	}
 

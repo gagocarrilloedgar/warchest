@@ -9,7 +9,7 @@ describe("Board", () => {
 	it("Should get a printable board", () => {
 		const board = new Board(5)
 		// const jestSpy = jest.spyOn(console, "log")
-		const stringBoard = board.createDrawableBoard()
+		const stringBoard = board.createDrawableBoard(true)
 
 		const expectedBoard =
 			"    0 1 2 3 4\n    ---------\n0 | . . C . .\n1 | . @ . @ .\n2 | . . . . .\n3 | . @ . @ .\n4 | . . W . ."

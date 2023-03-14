@@ -21,10 +21,10 @@ export class Board {
 	private readonly HORIZONTAL_SEPARATOR = "-"
 
 	private readonly NEUTRAL_ZONES = [
-		{ x: 1, y: 1 },
-		{ x: 1, y: 3 },
-		{ x: 3, y: 3 },
-		{ x: 3, y: 1 }
+		{ x: 1, y: 1, value: "@" },
+		{ x: 1, y: 3, value: "@" },
+		{ x: 3, y: 3, value: "@" },
+		{ x: 3, y: 1, value: "@" }
 	]
 
 	private readonly WOLF_ZONES = [{ x: 4, y: 2 }]
@@ -37,8 +37,19 @@ export class Board {
 		this.board = this.createBoard()
 	}
 
-	public createDrawableBoard(): string {
-		const board = this.board.map((row, rowIndex) => {
+	public createDrawableBoard(isInit?: boolean): string {
+		const board = isInit
+			? this.getInitialBoard()
+			: this.board.map((row) => row.map((column) => column.value).join(this.SEPARATOR))
+
+		const boardWithHorizontalSeparators = this.addHorizontalSeparator(board)
+		const boardWithVerticalSeparators = this.addVerticalSeparator(boardWithHorizontalSeparators)
+
+		return boardWithVerticalSeparators.join("\n")
+	}
+
+	public getInitialBoard(): string[] {
+		return this.board.map((row, rowIndex) => {
 			const newRow = row.map((column, columnIndex) => {
 				const zone = this.isControlZone(this.NEUTRAL_ZONES, rowIndex, columnIndex)
 					? this.NEUTRAL_ZONE
@@ -48,16 +59,13 @@ export class Board {
 					? "C"
 					: column.value
 
+				this.board[rowIndex][columnIndex].value = zone
+
 				return zone
 			})
 
 			return newRow.join(this.SEPARATOR)
 		})
-
-		const boardWithHorizontalSeparators = this.addHorizontalSeparator(board)
-		const boardWithVerticalSeparators = this.addVerticalSeparator(boardWithHorizontalSeparators)
-
-		return boardWithVerticalSeparators.join("\n")
 	}
 
 	public hashTagSeparator(playerName: string): string {
@@ -68,46 +76,57 @@ export class Board {
 		)
 	}
 
-	public placeUnitOnBoard(unit: Unit, position: Position, player: Player): void {
+	public placeUnitOnBoard(unit: Unit, position: Position): void {
 		if (!this.checkIfPositionIsInBoard({ x: position.x, y: position.y })) {
 			throw new Error("Position is not in board")
 		}
 
 		this.board[position.x][position.y].value = unit.type.getAcronym()
 		this.board[position.x][position.y].unit = unit
-		this.board[position.x][position.y].controlledBy = player
+		this.board[position.x][position.y].controlledBy = null
 	}
 
-	public moveUnitOnBoard(unit: Unit, from: Position, to: Position, player: Player): void {
-		if (!this.checkIfPositionIsInBoard({ x: from.x, y: from.y })) {
+	public controlZone(unit: Unit, position: Position, player: Player): void {
+		if (!this.checkIfPositionIsInBoard({ x: position.x, y: position.y })) {
 			throw new Error("Position is not in board")
 		}
 
-		console.log({ from, to })
+		const isPotentialControlZone = this.isControlZone(this.NEUTRAL_ZONES, position.x, position.y)
+		const isUnitInZone = this.board[position.x][position.y].value === unit.type.getAcronym()
+
+		if (!isPotentialControlZone) {
+			throw new Error("Position is not a control zone")
+		}
+
+		if (!isUnitInZone) {
+			throw new Error("Unit is not in control zone")
+		}
+
+		this.board[position.x][position.y].controlledBy = player
+		const isWolf = player.playerInfo.name === "wolf"
+
+		this.NEUTRAL_ZONES.splice(
+			this.NEUTRAL_ZONES.findIndex((zone) => zone.x === position.x && zone.y === position.y),
+			1
+		)
+
+		if (isWolf) {
+			this.WOLF_ZONES.push({ x: position.x, y: position.y })
+		} else {
+			this.CROWN_ZONES.push({ x: position.x, y: position.y })
+		}
+	}
+
+	public moveUnitOnBoard(unit: Unit, from: Position, to: Position): void {
+		if (!this.checkIfPositionIsInBoard({ x: from.x, y: from.y })) {
+			throw new Error("Position is not in board")
+		}
 
 		this.board[from.x][from.y].value = this.EMPTY_ZONE
 		this.board[from.x][from.y].unit = null
 		this.board[from.x][from.y].controlledBy = null
 
-		// Check if is control zone and add player to control zone
-		const isPotentialControlZone = this.isControlZone(this.NEUTRAL_ZONES, to.x, to.y)
-
-		if (isPotentialControlZone) {
-			const isWolf = player.playerInfo.name === "wolf"
-
-			this.NEUTRAL_ZONES.splice(
-				this.NEUTRAL_ZONES.findIndex((zone) => zone.x === to.x && zone.y === to.y),
-				1
-			)
-
-			if (isWolf) {
-				this.WOLF_ZONES.push({ x: to.x, y: to.y })
-			} else {
-				this.CROWN_ZONES.push({ x: to.x, y: to.y })
-			}
-		}
-
-		this.placeUnitOnBoard(unit, to, player)
+		this.placeUnitOnBoard(unit, to)
 	}
 
 	public addControlledZones(wolf: Player, crown: Player): void {
