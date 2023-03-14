@@ -28,5 +28,5 @@ export class ActionType extends EnumValueObject<ActionTypes> {
 
 export interface Action {
 	movements: string[]
-	execute(answers: string[], board: Board, player: Player): Promise<void> | void
+	execute(answers: string[], player: Player, board?: Board | undefined): Promise<void> | void
 }

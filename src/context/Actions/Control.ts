@@ -14,11 +14,11 @@ export class Control implements Action {
 
 	movements: string[] = ["Please select the unit you want to control (y, x): "]
 
-	public execute(answers: string[], board: Board, player: Player): void {
+	public execute(answers: string[], player: Player, board: Board): void {
 		const control = answers[0]
 		const controlPosition = BoardPosition.fromString(control)
 
-		const unit = board.getBoard[controlPosition.x][controlPosition.y].unit
+		const unit = board.getUnitFromPosition(controlPosition)
 		const hand = player.playerInfo.hand
 
 		if (!unit) {

@@ -124,15 +124,49 @@ export class Board {
 		})
 	}
 
-	public get getBoard(): TableBoardPosition[][] {
-		return this.board
-	}
-
 	public getControlledZones(): { wolf: number; crown: number } {
 		return {
 			wolf: this.WOLF_ZONES.length,
 			crown: this.CROWN_ZONES.length
 		}
+	}
+
+	public doesPositionContainUnit(position: Position): boolean {
+		return this.board[position.x][position.y].unit !== null
+	}
+
+	public getUnitFromPosition(position: Position): Unit | null {
+		return this.board[position.x][position.y].unit
+	}
+
+	public isPositionOwnedByPlayer(position: Position, playerName: string): boolean {
+		return this.board[position.x][position.y].controlledBy?.playerInfo.name === playerName
+	}
+
+	public isPositionFree(position: Position): boolean {
+		return (
+			this.board[position.x][position.y].controlledBy === null &&
+			!this.doesPositionContainUnit(position)
+		)
+	}
+
+	public hasPositionAdjacentControlZone(position: Position, playerName: string): boolean {
+		const { x, y } = position
+
+		const leftPosition =
+			x - 1 >= 0 && this.board[x - 1][y].controlledBy?.playerInfo.name === playerName
+
+		const rightPosition =
+			x + 1 < this.board.length && this.board[x + 1][y].controlledBy?.playerInfo.name === playerName
+
+		const topPosition =
+			y - 1 >= 0 && this.board[x][y - 1].controlledBy?.playerInfo.name === playerName
+
+		const bottomPosition =
+			y + 1 < this.board[0].length &&
+			this.board[x][y + 1].controlledBy?.playerInfo.name === playerName
+
+		return leftPosition || rightPosition || topPosition || bottomPosition
 	}
 
 	private createBoard(): { value: string; controlledBy: Player | null; unit: Unit | null }[][] {

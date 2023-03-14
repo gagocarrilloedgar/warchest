@@ -1,4 +1,3 @@
-import { Board } from "../Board"
 import { Player } from "../Player"
 import { Unit, UnitType, UnitTypes } from "../Unit"
 import { Action, ActionType, ActionTypes } from "./Action"
@@ -17,23 +16,23 @@ export class Recruit implements Action {
 		"Enter the name of the unit you want to recruit: "
 	]
 
-	public execute(answers: string[], board?: Board | undefined, player?: Player | undefined): void {
+	public execute(answers: string[], player: Player): void {
 		const unitToDiscardString = answers[0]
 		const unitToRecruitString = answers[1]
 
 		const unitToRecruit = UnitType.fromValue(unitToRecruitString.toUpperCase() as UnitTypes)
 		const unitToDiscard = UnitType.fromValue(unitToDiscardString.toUpperCase() as UnitTypes)
 
-		const hand = player?.playerInfo.hand
-		const recruit = player?.playerInfo.recruits
-		const discard = player?.playerInfo.discards
+		const hand = player.playerInfo.hand
+		const recruit = player.playerInfo.recruits
+		const discard = player.playerInfo.discards
 
-		const handAvailableTypes = hand?.getUnitTypesAvailable().map((type) => type.value)
+		const handAvailableTypes = hand.getUnitTypesAvailable().map((type) => type.value)
 
-		const recruitAvailableTypes = recruit?.getAvailableUnitTypes()
+		const recruitAvailableTypes = recruit.getAvailableUnitTypes()
 
-		const isAvailable = handAvailableTypes?.includes(unitToDiscard.value)
-		const isRecruitAvailable = recruitAvailableTypes?.includes(unitToRecruit.value)
+		const isAvailable = handAvailableTypes.includes(unitToDiscard.value)
+		const isRecruitAvailable = recruitAvailableTypes.includes(unitToRecruit.value)
 
 		if (!isAvailable) {
 			throw new RecruitError("Unit not available in hand.")
@@ -44,11 +43,11 @@ export class Recruit implements Action {
 		}
 
 		// Remove the unit from recruitment and added to the discard pile
-		recruit?.removeUnit(unitToRecruit)
-		player?.getBag.addUnit(unitToRecruit)
+		recruit.removeUnit(unitToRecruit)
+		player.getBag.addUnit(unitToRecruit)
 
 		// Add the selected unit to the player's bag and remove it from the hand
-		hand?.removeSelectedUnit(Unit.fromValue(unitToDiscard.value))
-		discard?.addUnit(unitToDiscard)
+		hand.removeSelectedUnit(Unit.fromValue(unitToDiscard.value))
+		discard.addUnit(unitToDiscard)
 	}
 }
