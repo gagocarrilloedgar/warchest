@@ -18,7 +18,13 @@ export class PlayerHand {
 	}
 
 	public removeSelectedUnit(unit: Unit): void {
-		const index = this.units.indexOf(unit)
+		// find the first unit that matches the type
+		const index = this.units.findIndex(
+			(unitInHand: Unit) => unitInHand.type.value === unit.type.value
+		)
+
+		console.log("index", index, unit.type.value)
+
 		if (index > -1) {
 			this.units.splice(index, 1)
 		}

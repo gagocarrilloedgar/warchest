@@ -49,8 +49,7 @@ export class Place implements Action {
 			throw new PlaceError("Position is not adjacent to any of your units.")
 		}
 
-		player.removeUnit(newUnit)
-		player.placeUnitOnBoard(new Unit(unitType), { x, y })
+		hand.removeSelectedUnit(newUnit)
 		board.placeUnitOnBoard(new Unit(unitType), { x, y }, player)
 	}
 
