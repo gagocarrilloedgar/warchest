@@ -24,8 +24,7 @@ export class Move implements Action {
 		const toPosition = BoardPosition.fromString(to)
 
 		const unitToMove = board.getUnitFromPosition(fromPosition)
-		const hand = player.playerInfo.hand
-		const playerName = player.playerInfo.name
+		const playerName = player.getName
 
 		if (!board.doesPositionContainUnit(fromPosition)) {
 			throw new MoveError("There is no unit on this position.")
@@ -43,7 +42,7 @@ export class Move implements Action {
 			throw new MoveError("There is no unit on this position.")
 		}
 
-		if (!hand.containsUnitType(unitToMove.type)) {
+		if (!player.handContainsUnit(unitToMove.type)) {
 			throw new MoveError("You do not have this unit in your hand.")
 		}
 
@@ -54,7 +53,6 @@ export class Move implements Action {
 		}
 
 		board.moveUnitOnBoard(unitToMove, fromPosition, toPosition, player)
-		hand.removeSelectedUnit(unitToMove)
-		player.playerInfo.discards.addUnit(unitToMove.type)
+		player.discardUnit(unitToMove.type)
 	}
 }

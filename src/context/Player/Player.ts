@@ -1,7 +1,7 @@
 import { ActionFactory, ActionType, ActionTypes } from "../Actions"
 import { Board } from "../Board"
 import { PromptQuestion } from "../shared"
-import { Unit, UnitTypes } from "../Unit"
+import { Unit, UnitType, UnitTypes } from "../Unit"
 import { PlayerBag } from "./PlayerBag"
 import { PlayerDiscards } from "./PlayerDiscards"
 import { PlayerHand } from "./PlayerHand"
@@ -54,10 +54,6 @@ export class Player {
 		}
 	}
 
-	public get getBag(): PlayerBag {
-		return this.bag
-	}
-
 	public async nextAction(
 		board: Board,
 		actionType: ActionType,
@@ -76,8 +72,7 @@ export class Player {
 			// Ask the questions
 			await this.askQuestion(action.movements, answers, propmpter, board)
 
-			// Execute the action
-			await action.execute(answers, board, this)
+			action.execute(answers, this, board)
 		} catch (error: Error | unknown) {
 			if (error instanceof Error) {
 				console.log(error.message)
@@ -88,12 +83,12 @@ export class Player {
 		return true
 	}
 
-	public refill(): void {
-		this.hand.refillHand(this.bag)
+	public get getName(): string {
+		return this.name
 	}
 
-	public placeUnitOnBoard(unit: Unit, position: { x: number; y: number }): void {
-		this.unitsInBoard.push({ position, unit })
+	public refill(): void {
+		this.hand.refillHand(this.bag)
 	}
 
 	public addInitiativeToken(): void {
@@ -108,8 +103,27 @@ export class Player {
 		return this.initiativeToken
 	}
 
-	public removeUnit(unit: Unit): void {
-		this.hand.removeSelectedUnit(unit)
+	public removeUnit(unitType: UnitType): void {
+		this.hand.removeUnit(unitType)
+	}
+
+	public discardUnit(unitType: UnitType): void {
+		this.hand.removeUnit(unitType)
+		this.discards.addUnit(unitType)
+	}
+
+	public removeControlToken(): void {
+		this.controlTokens - 1
+	}
+
+	public handContainsUnit(unitType: UnitType): boolean {
+		return this.hand.containsUnitType(unitType)
+	}
+
+	public recruit(unitToRecruit: UnitType, unitToDiscard: UnitType): void {
+		this.recruits.removeUnit(unitToRecruit)
+		this.bag.addUnit(unitToRecruit)
+		this.discardUnit(unitToDiscard)
 	}
 
 	private async askQuestion(

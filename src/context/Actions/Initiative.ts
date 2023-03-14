@@ -18,18 +18,14 @@ export class Initiative implements Action {
 
 	public execute(answers: string[], player: Player): void {
 		const unitName = answers[0]
-		const hand = player.playerInfo.hand
-		const discards = player.playerInfo.discards
-
 		const unitType = UnitType.fromValue(unitName.toUpperCase() as UnitTypes)
 		const newUnit = new Unit(unitType)
 
-		if (!hand.containsUnitType(unitType)) {
+		if (!player.handContainsUnit(unitType)) {
 			throw new InitiativeError("Unit not available in hand.")
 		}
 
-		hand.removeSelectedUnit(newUnit)
-		discards.addUnit(unitType)
+		player.discardUnit(newUnit.type)
 		player.addInitiativeToken()
 	}
 }

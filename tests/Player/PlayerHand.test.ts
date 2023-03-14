@@ -1,5 +1,5 @@
 import { PlayerHand } from "../../src/context/Player"
-import { Unit, UnitTypes } from "../../src/context/Unit"
+import { Unit, UnitType, UnitTypes } from "../../src/context/Unit"
 
 describe("PlayerHand", () => {
 	const units = [
@@ -30,8 +30,8 @@ describe("PlayerHand", () => {
 
 	it("Should be able to remove a unit from the hand", () => {
 		const playerHand = new PlayerHand(units)
-		const unitToRemove = Unit.fromValue(UnitTypes.ARCHER)
-		playerHand.removeSelectedUnit(unitToRemove)
+		const unitToRemove = UnitType.fromValue(UnitTypes.ARCHER)
+		playerHand.removeUnit(unitToRemove)
 		expect(playerHand.getUnitsCount()).toEqual(2)
 	})
 })

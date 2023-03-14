@@ -1,5 +1,5 @@
 import { Player } from "../Player"
-import { Unit, UnitType, UnitTypes } from "../Unit"
+import { UnitType, UnitTypes } from "../Unit"
 import { Action, ActionType, ActionTypes } from "./Action"
 
 class RecruitError extends Error {
@@ -25,7 +25,6 @@ export class Recruit implements Action {
 
 		const hand = player.playerInfo.hand
 		const recruit = player.playerInfo.recruits
-		const discard = player.playerInfo.discards
 
 		const handAvailableTypes = hand.getUnitTypesAvailable().map((type) => type.value)
 
@@ -33,6 +32,7 @@ export class Recruit implements Action {
 
 		const isAvailable = handAvailableTypes.includes(unitToDiscard.value)
 		const isRecruitAvailable = recruitAvailableTypes.includes(unitToRecruit.value)
+		
 
 		if (!isAvailable) {
 			throw new RecruitError("Unit not available in hand.")
@@ -43,11 +43,6 @@ export class Recruit implements Action {
 		}
 
 		// Remove the unit from recruitment and added to the discard pile
-		recruit.removeUnit(unitToRecruit)
-		player.getBag.addUnit(unitToRecruit)
-
-		// Add the selected unit to the player's bag and remove it from the hand
-		hand.removeSelectedUnit(Unit.fromValue(unitToDiscard.value))
-		discard.addUnit(unitToDiscard)
+		player.recruit(unitToRecruit, unitToDiscard)
 	}
 }

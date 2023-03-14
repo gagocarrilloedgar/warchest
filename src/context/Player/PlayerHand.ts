@@ -17,10 +17,10 @@ export class PlayerHand {
 		return this.units
 	}
 
-	public removeSelectedUnit(unit: Unit): void {
+	public removeUnit(unitType: UnitType): void {
 		// find the first unit that matches the type
 		const index = this.units.findIndex(
-			(unitInHand: Unit) => unitInHand.type.value === unit.type.value
+			(unitInHand: Unit) => unitInHand.type.value === unitType.value
 		)
 
 		if (index > -1) {

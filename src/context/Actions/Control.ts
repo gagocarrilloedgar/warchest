@@ -19,23 +19,16 @@ export class Control implements Action {
 		const controlPosition = BoardPosition.fromString(control)
 
 		const unit = board.getUnitFromPosition(controlPosition)
-		const hand = player.playerInfo.hand
 
 		if (!unit) {
 			throw new ControlError("There is no unit on this position.")
 		}
 
-		if (!hand.containsUnitType(unit.type)) {
+		if (!player.handContainsUnit(unit.type)) {
 			throw new ControlError("You do not have this unit in your hand.")
 		}
 
-		// We remove the unit from the player's hand
-		hand.removeSelectedUnit(unit)
-
-		// We add the unit to the discard pile
-		player.playerInfo.discards.addUnit(unit.type)
-
-		// We remove one control token from the player
-		player.playerInfo.controlTokens -= 1
+		player.discardUnit(unit.type)
+		player.removeControlToken()
 	}
 }

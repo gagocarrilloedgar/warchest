@@ -18,8 +18,6 @@ export class Place implements Action {
 	]
 
 	public execute(answers: string[], player: Player, board: Board): void {
-		const hand = player.playerInfo.hand
-
 		const unitTypeString = answers[0]
 		const positionString = answers[1]
 		const position = BoardPosition.fromString(positionString)
@@ -34,15 +32,15 @@ export class Place implements Action {
 			throw new PlaceError("You cannot place a royal unit.")
 		}
 
-		if (!hand.containsUnitType(unitType)) {
+		if (!player.handContainsUnit(unitType)) {
 			throw new PlaceError("Unit not available in hand.")
 		}
 
-		if (!board.hasPositionAdjacentControlZone(position, player.playerInfo.name)) {
+		if (!board.hasPositionAdjacentControlZone(position, player.getName)) {
 			throw new PlaceError("Position is not adjacent to any of your units.")
 		}
 
-		hand.removeSelectedUnit(newUnit)
+		player.removeUnit(newUnit.type)
 		board.placeUnitOnBoard(new Unit(unitType), position, player)
 	}
 }

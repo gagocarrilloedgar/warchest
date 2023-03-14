@@ -24,9 +24,7 @@ export class Attack implements Action {
 		const fromPosition = BoardPosition.fromString(from)
 		const toPosition = BoardPosition.fromString(to)
 
-		const hand = player.playerInfo.hand
-		const discards = player.playerInfo.discards
-		const playerName = player.playerInfo.name
+		const playerName = player.getName
 
 		const attackUnit = board.getUnitFromPosition(fromPosition)
 
@@ -38,7 +36,7 @@ export class Attack implements Action {
 			throw new AttackError("This unit is not yours.")
 		}
 
-		if (!hand.containsUnitType(attackUnit.type)) {
+		if (!player.handContainsUnit(attackUnit.type)) {
 			throw new AttackError("You do not have this unit in your hand.")
 		}
 
@@ -55,13 +53,7 @@ export class Attack implements Action {
 			throw new AttackError("This position is not controlled by an enemy.")
 		}
 
-		// We move the unit at the board level
 		board.moveUnitOnBoard(attackUnit, fromPosition, fromPosition, player)
-
-		// We remove the unit from the player's hand
-		hand.removeSelectedUnit(attackUnit)
-
-		// We add the unit to the discard pile
-		discards.addUnit(attackUnit.type)
+		player.discardUnit(attackUnit.type)
 	}
 }

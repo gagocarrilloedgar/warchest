@@ -2,6 +2,11 @@ import { Board } from "../Board"
 import { Player } from "../Player"
 import { EnumValueObject } from "../shared"
 
+export interface Action {
+	movements: string[]
+	execute(answers: string[], player: Player, board?: Board): void
+}
+
 export enum ActionTypes {
 	PLACE = "place",
 	MOVE = "move",
@@ -24,9 +29,4 @@ export class ActionType extends EnumValueObject<ActionTypes> {
 	protected throwErrorForInvalidValue(value: ActionTypes): void {
 		throw new Error(`Invalid action type: ${value}`)
 	}
-}
-
-export interface Action {
-	movements: string[]
-	execute(answers: string[], player: Player, board?: Board | undefined): Promise<void> | void
 }
