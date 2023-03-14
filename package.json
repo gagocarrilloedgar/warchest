@@ -4,7 +4,7 @@
 	"description": "Eventbrite warchest list interview challenge",
 	"scripts": {
 		"dev": "ts-node-dev ./src/server.ts",
-		"lint": "eslint --ignore-path .gitignore .",
+		"lint": "eslint",
 		"lint:fix": "eslint --fix",
 		"prettier:fix": "prettier --write ./src/**/*.ts",
 		"test": "jest --verbose"
